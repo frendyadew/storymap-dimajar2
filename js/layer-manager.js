@@ -8,14 +8,14 @@ class LayerManager {
         this.popupLockedByClick = false; // <-- Tambahkan flag global
         this.initializeLayerGroups();
     }
-    
+
     initializeLayerGroups() {
         // Create layer groups for different types
         Object.keys(mapConfig.dataSources).forEach(layerName => {
             this.layerGroups[layerName] = L.layerGroup(); // Jangan .addTo(this.map)
         });
     }
-    
+
     async loadLayer(layerName) {
         try {
             const response = await fetch(mapConfig.dataSources[layerName]);
@@ -44,8 +44,16 @@ class LayerManager {
                 return;
             }
 
+            const isPointLayer = ['pendidikan', 'perdaganganjasa', 'peribadatan'].includes(layerName);
+
             const layer = L.geoJSON(geojsonData, {
-                style: (feature) => this.getLayerStyle(layerName, feature),
+                style: (feature) => !isPointLayer ? this.getLayerStyle(layerName, feature) : undefined,
+                pointToLayer: isPointLayer
+                    ? (feature, latlng) => {
+                        const style = mapConfig.layerStyles[layerName];
+                        return L.circleMarker(latlng, style);
+                    }
+                    : undefined,
                 onEachFeature: (feature, layer) => {
                     // Hanya untuk layer yang perlu interaksi
                     if (layerName !== 'dimajar2_batas') {
@@ -108,7 +116,7 @@ class LayerManager {
             return null;
         }
     }
-    
+
     getLayerStyle(layerName, feature) {
         if (layerName === 'lahan') {
             // Mapping warna berdasarkan keterangan
@@ -135,7 +143,7 @@ class LayerManager {
             className: `layer-${layerName}`
         };
     }
-    
+
     createPointLayer(layerName, feature, latlng) {
         const style = mapConfig.layerStyles[layerName] || {};
         const marker = L.circleMarker(latlng, style);
@@ -174,11 +182,11 @@ class LayerManager {
 
         return marker;
     }
-    
+
     bindPopup(feature, layer, layerName) {
         layer.bindPopup(popupHandler.createPopupContent(feature, layerName));
     }
-    
+
     updateBounds(layer) {
         if (this.bounds) {
             this.bounds.extend(layer.getBounds());
@@ -186,29 +194,27 @@ class LayerManager {
             this.bounds = layer.getBounds();
         }
     }
-    
+
     toggleLayer(layerName, visible) {
         if (this.layerGroups[layerName]) {
             if (visible) {
                 if (!this.map.hasLayer(this.layerGroups[layerName])) {
                     this.layerGroups[layerName].addTo(this.map);
-                    // Pastikan area kajian selalu di bawah
-                    if (layerName === 'dimajar2_batas') {
-                        this.layerGroups['dimajar2_batas'].bringToBack();
-                    }
                 }
             } else {
                 this.map.removeLayer(this.layerGroups[layerName]);
             }
+            // Atur ulang urutan layer setiap selesai toggle
+            this.setLayerOrder();
         }
     }
-    
+
     zoomToExtent() {
         if (this.bounds && this.bounds.isValid()) {
             this.map.fitBounds(this.bounds, { padding: [20, 20] });
         }
     }
-    
+
     async loadAllLayers() {
         const loadingElement = document.getElementById('loading');
         loadingElement.style.display = 'block';
@@ -216,10 +222,13 @@ class LayerManager {
         try {
             // Urutan sesuai permintaan
             const layerOrder = [
-                'pendidikan', 'perdaganganjasa', 'peribadatan', // Sarana dan Prasarana
-                'jalan_lokal',                                  // Jaringan Jalan Infrastruktur
-                'lahan', 'bangunan',                            // Penggunaan Lahan (lahan di bawah bangunan)
-                'dimajar2_batas'                                // Area Kajian
+                'pendidikan',
+                'perdaganganjasa',
+                'peribadatan',
+                'jalan_lokal',
+                'bangunan',
+                'lahan',
+                'dimajar2_batas'
             ];
             for (const layerName of layerOrder) {
                 await this.loadLayer(layerName);
@@ -228,6 +237,8 @@ class LayerManager {
                     this.layerGroups[layerName].addTo(this.map);
                 }
             }
+            // Atur urutan layer setelah semua di-add
+            this.setLayerOrder();
             // Pastikan area kajian di bawah
             if (this.layerGroups['dimajar2_batas'] && this.map.hasLayer(this.layerGroups['dimajar2_batas'])) {
                 this.layerGroups['dimajar2_batas'].bringToBack();
@@ -244,7 +255,7 @@ class LayerManager {
             loadingElement.style.display = 'none';
         }
     }
-    
+
     showError(message) {
         const errorDiv = document.createElement('div');
         errorDiv.className = 'error-message';
@@ -253,18 +264,39 @@ class LayerManager {
                 <i class="fas fa-exclamation-triangle"></i> ${message}
             </div>
         `;
-        
+
         document.body.appendChild(errorDiv);
-        
+
         setTimeout(() => {
             document.body.removeChild(errorDiv);
         }, 5000);
     }
-    
+
     getLayerFeatureCount(layerName) {
         if (this.layers[layerName]) {
             return this.layers[layerName].getLayers().length;
         }
         return 0;
+    }
+
+    setLayerOrder() {
+        // Urutan dari atas ke bawah (paling atas di indeks 0, paling bawah di indeks terakhir)
+        const order = [
+            'pendidikan',
+            'perdaganganjasa',
+            'peribadatan',
+            'jalan_lokal',
+            'bangunan',
+            'lahan',
+            'dimajar2_batas'
+        ];
+        // Dari bawah ke atas, panggil bringToBack
+        for (let i = order.length - 1; i >= 0; i--) {
+            const name = order[i];
+            const layer = this.layers[name];
+            if (layer && this.map.hasLayer(this.layerGroups[name])) {
+                layer.bringToFront();
+            }
+        }
     }
 }
