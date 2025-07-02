@@ -24,12 +24,10 @@ class LayerManager {
             }
             const geojsonData = await response.json();
 
-            // Khusus layer batas, simpan referensi untuk update fill
+            // Khusus layer batas, tampilkan saja tanpa event apapun
             if (layerName === 'dimajar2_batas') {
-                // Hapus layer lama dari group, bukan dari map langsung
                 this.layerGroups[layerName].clearLayers();
 
-                // Style outline kuning, tanpa fill
                 const layer = L.geoJSON(geojsonData, {
                     style: {
                         color: '#f7b731',
@@ -37,9 +35,9 @@ class LayerManager {
                         fillColor: '#fff700',
                         fillOpacity: 0
                     }
+                    // Tidak ada onEachFeature!
                 });
 
-                // Tambahkan ke group, bukan langsung ke map
                 this.layerGroups[layerName].addLayer(layer);
                 this.layers[layerName] = layer;
                 this.updateBounds(layer);
