@@ -12,7 +12,7 @@ class LayerManager {
     initializeLayerGroups() {
         // Create layer groups for different types
         Object.keys(mapConfig.dataSources).forEach(layerName => {
-            this.layerGroups[layerName] = L.layerGroup().addTo(this.map);
+            this.layerGroups[layerName] = L.layerGroup(); // Jangan .addTo(this.map)
         });
     }
     
@@ -192,6 +192,10 @@ class LayerManager {
             if (visible) {
                 if (!this.map.hasLayer(this.layerGroups[layerName])) {
                     this.layerGroups[layerName].addTo(this.map);
+                    // Pastikan area kajian selalu di bawah
+                    if (layerName === 'dimajar2_batas') {
+                        this.layerGroups['dimajar2_batas'].bringToBack();
+                    }
                 }
             } else {
                 this.map.removeLayer(this.layerGroups[layerName]);
@@ -219,6 +223,14 @@ class LayerManager {
             ];
             for (const layerName of layerOrder) {
                 await this.loadLayer(layerName);
+                const checkbox = document.getElementById(layerName);
+                if (checkbox && checkbox.checked) {
+                    this.layerGroups[layerName].addTo(this.map);
+                }
+            }
+            // Pastikan area kajian di bawah
+            if (this.layerGroups['dimajar2_batas'] && this.map.hasLayer(this.layerGroups['dimajar2_batas'])) {
+                this.layerGroups['dimajar2_batas'].bringToBack();
             }
 
             setTimeout(() => {
