@@ -46,56 +46,55 @@ class LayerManager {
 
             const layer = L.geoJSON(geojsonData, {
                 style: (feature) => this.getLayerStyle(layerName, feature),
-                pointToLayer: (feature, latlng) => this.createPointLayer(layerName, feature, latlng),
                 onEachFeature: (feature, layer) => {
-                    // Jangan bind popup di sini, akan diatur manual di event
+                    // Hanya untuk layer yang perlu interaksi
+                    if (layerName !== 'dimajar2_batas') {
+                        layer.on('mouseover', (e) => {
+                            if (this.popupLockedByClick) return;
+                            // Popup kecil hanya KETERANGAN
+                            const keterangan = feature.properties?.KETERANGAN || '-';
+                            layer.bindPopup(`<div style="font-size:12px;padding:2px 8px;">${keterangan}</div>`, {
+                                closeButton: false,
+                                offset: [0, -8],
+                                className: 'popup-hover'
+                            }).openPopup();
+                            if (layer.setStyle && feature.geometry.type !== 'Point') {
+                                layer.setStyle({ weight: 5, color: '#ff7800' });
+                            }
+                        });
 
-                    // Hover popup (singkat)
-                    layer.on('mouseover', (e) => {
-                        if (this.popupLockedByClick) return;
-                        // Popup kecil hanya KETERANGAN
-                        const keterangan = feature.properties?.KETERANGAN || '-';
-                        layer.bindPopup(`<div style="font-size:12px;padding:2px 8px;">${keterangan}</div>`, {
-                            closeButton: false,
-                            offset: [0, -8],
-                            className: 'popup-hover'
-                        }).openPopup();
-                        if (layer.setStyle && feature.geometry.type !== 'Point') {
-                            layer.setStyle({ weight: 5, color: '#ff7800' });
-                        }
-                    });
+                        layer.on('mouseout', (e) => {
+                            if (this.popupLockedByClick) return;
+                            layer.closePopup();
+                            // Agar popup hover tidak tertinggal
+                            layer.unbindPopup();
+                            if (layer.setStyle && feature.geometry.type !== 'Point') {
+                                layer.setStyle({ weight: mapConfig.layerStyles[layerName]?.weight || 2, color: mapConfig.layerStyles[layerName]?.color });
+                            }
+                        });
 
-                    layer.on('mouseout', (e) => {
-                        if (this.popupLockedByClick) return;
-                        layer.closePopup();
-                        // Agar popup hover tidak tertinggal
-                        layer.unbindPopup();
-                        if (layer.setStyle && feature.geometry.type !== 'Point') {
-                            layer.setStyle({ weight: mapConfig.layerStyles[layerName]?.weight || 2, color: mapConfig.layerStyles[layerName]?.color });
-                        }
-                    });
+                        // Klik popup (lengkap)
+                        layer.on('click', (e) => {
+                            this.popupLockedByClick = true;
+                            // Bind popup lengkap
+                            layer.bindPopup(popupHandler.createPopupContent(feature, layerName), {
+                                closeButton: true,
+                                className: 'popup-click'
+                            }).openPopup();
+                            if (layer.setStyle && feature.geometry.type !== 'Point') {
+                                layer.setStyle({ weight: 5, color: '#ff7800' });
+                            }
+                        });
 
-                    // Klik popup (lengkap)
-                    layer.on('click', (e) => {
-                        this.popupLockedByClick = true;
-                        // Bind popup lengkap
-                        layer.bindPopup(popupHandler.createPopupContent(feature, layerName), {
-                            closeButton: true,
-                            className: 'popup-click'
-                        }).openPopup();
-                        if (layer.setStyle && feature.geometry.type !== 'Point') {
-                            layer.setStyle({ weight: 5, color: '#ff7800' });
-                        }
-                    });
-
-                    layer.on('popupclose', (e) => {
-                        this.popupLockedByClick = false;
-                        // Unbind agar hover popup bisa muncul lagi
-                        layer.unbindPopup();
-                        if (layer.setStyle && feature.geometry.type !== 'Point') {
-                            layer.setStyle({ weight: mapConfig.layerStyles[layerName]?.weight || 2, color: mapConfig.layerStyles[layerName]?.color });
-                        }
-                    });
+                        layer.on('popupclose', (e) => {
+                            this.popupLockedByClick = false;
+                            // Unbind agar hover popup bisa muncul lagi
+                            layer.unbindPopup();
+                            if (layer.setStyle && feature.geometry.type !== 'Point') {
+                                layer.setStyle({ weight: mapConfig.layerStyles[layerName]?.weight || 2, color: mapConfig.layerStyles[layerName]?.color });
+                            }
+                        });
+                    }
                 }
             });
 
