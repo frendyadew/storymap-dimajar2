@@ -1,0 +1,261 @@
+// Layer Manager
+class LayerManager {
+    constructor(map) {
+        this.map = map;
+        this.layers = {};
+        this.layerGroups = {};
+        this.bounds = null;
+        this.popupLockedByClick = false; // <-- Tambahkan flag global
+        this.initializeLayerGroups();
+    }
+    
+    initializeLayerGroups() {
+        // Create layer groups for different types
+        Object.keys(mapConfig.dataSources).forEach(layerName => {
+            this.layerGroups[layerName] = L.layerGroup().addTo(this.map);
+        });
+    }
+    
+    async loadLayer(layerName) {
+        try {
+            const response = await fetch(mapConfig.dataSources[layerName]);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const geojsonData = await response.json();
+
+            // Khusus layer batas, simpan referensi untuk update fill
+            if (layerName === 'dimajar2_batas') {
+                // Hapus layer lama dari group, bukan dari map langsung
+                this.layerGroups[layerName].clearLayers();
+
+                // Style outline kuning, tanpa fill
+                const layer = L.geoJSON(geojsonData, {
+                    style: {
+                        color: '#f7b731',
+                        weight: 3,
+                        fillColor: '#fff700',
+                        fillOpacity: 0
+                    }
+                });
+
+                // Tambahkan ke group, bukan langsung ke map
+                this.layerGroups[layerName].addLayer(layer);
+                this.layers[layerName] = layer;
+                this.updateBounds(layer);
+                return;
+            }
+
+            const layer = L.geoJSON(geojsonData, {
+                style: (feature) => this.getLayerStyle(layerName, feature),
+                pointToLayer: (feature, latlng) => this.createPointLayer(layerName, feature, latlng),
+                onEachFeature: (feature, layer) => {
+                    // Jangan bind popup di sini, akan diatur manual di event
+
+                    // Hover popup (singkat)
+                    layer.on('mouseover', (e) => {
+                        if (this.popupLockedByClick) return;
+                        // Popup kecil hanya KETERANGAN
+                        const keterangan = feature.properties?.KETERANGAN || '-';
+                        layer.bindPopup(`<div style="font-size:12px;padding:2px 8px;">${keterangan}</div>`, {
+                            closeButton: false,
+                            offset: [0, -8],
+                            className: 'popup-hover'
+                        }).openPopup();
+                        if (layer.setStyle && feature.geometry.type !== 'Point') {
+                            layer.setStyle({ weight: 5, color: '#ff7800' });
+                        }
+                    });
+
+                    layer.on('mouseout', (e) => {
+                        if (this.popupLockedByClick) return;
+                        layer.closePopup();
+                        // Agar popup hover tidak tertinggal
+                        layer.unbindPopup();
+                        if (layer.setStyle && feature.geometry.type !== 'Point') {
+                            layer.setStyle({ weight: mapConfig.layerStyles[layerName]?.weight || 2, color: mapConfig.layerStyles[layerName]?.color });
+                        }
+                    });
+
+                    // Klik popup (lengkap)
+                    layer.on('click', (e) => {
+                        this.popupLockedByClick = true;
+                        // Bind popup lengkap
+                        layer.bindPopup(popupHandler.createPopupContent(feature, layerName), {
+                            closeButton: true,
+                            className: 'popup-click'
+                        }).openPopup();
+                        if (layer.setStyle && feature.geometry.type !== 'Point') {
+                            layer.setStyle({ weight: 5, color: '#ff7800' });
+                        }
+                    });
+
+                    layer.on('popupclose', (e) => {
+                        this.popupLockedByClick = false;
+                        // Unbind agar hover popup bisa muncul lagi
+                        layer.unbindPopup();
+                        if (layer.setStyle && feature.geometry.type !== 'Point') {
+                            layer.setStyle({ weight: mapConfig.layerStyles[layerName]?.weight || 2, color: mapConfig.layerStyles[layerName]?.color });
+                        }
+                    });
+                }
+            });
+
+            this.layerGroups[layerName].clearLayers();
+            this.layerGroups[layerName].addLayer(layer);
+            this.layers[layerName] = layer;
+            this.updateBounds(layer);
+        } catch (error) {
+            console.error(`Error loading layer ${layerName}:`, error);
+            this.showError(`Failed to load ${layerName} layer`);
+            return null;
+        }
+    }
+    
+    getLayerStyle(layerName, feature) {
+        if (layerName === 'lahan') {
+            // Mapping warna berdasarkan keterangan
+            const colorMap = {
+                'Tempat Tinggal': '#b5ead7',
+                'Vegetasi Non Budidaya Lainnya': '#ffdac1',
+                'Perkebunan': '#ffb7b2',
+                'Pekarangan': '#b2cefe',
+                'Pendidikan': '#f7b731',
+                'Transportasi': '#c5cae9',
+                // tambahkan sesuai kebutuhan
+            };
+            const keterangan = feature.properties?.KETERANGAN;
+            return {
+                color: '#888',
+                weight: 1.5,
+                fillOpacity: 1, // <-- solid
+                fillColor: colorMap[keterangan] || '#cccccc'
+            };
+        }
+        const style = mapConfig.layerStyles[layerName] || {};
+        return {
+            ...style,
+            className: `layer-${layerName}`
+        };
+    }
+    
+    createPointLayer(layerName, feature, latlng) {
+        const style = mapConfig.layerStyles[layerName] || {};
+        const marker = L.circleMarker(latlng, style);
+
+        // Add hover effects (visual)
+        marker.on('mouseover', (e) => {
+            e.target.setStyle({
+                fillOpacity: 1,
+                radius: style.radius + 2
+            });
+            // Show popup on hover
+            if (!this.popupLockedByClick) {
+                e.target.openPopup();
+            }
+        });
+
+        marker.on('mouseout', (e) => {
+            e.target.setStyle({
+                fillOpacity: style.fillOpacity,
+                radius: style.radius
+            });
+            // Hanya tutup popup jika BUKAN sedang locked oleh klik
+            if (!this.popupLockedByClick) {
+                e.target.closePopup();
+            }
+        });
+
+        // Tambahkan event click dan popupclose agar flag konsisten
+        marker.on('click', (e) => {
+            this.popupLockedByClick = true;
+            marker.openPopup();
+        });
+        marker.on('popupclose', (e) => {
+            this.popupLockedByClick = false;
+        });
+
+        return marker;
+    }
+    
+    bindPopup(feature, layer, layerName) {
+        layer.bindPopup(popupHandler.createPopupContent(feature, layerName));
+    }
+    
+    updateBounds(layer) {
+        if (this.bounds) {
+            this.bounds.extend(layer.getBounds());
+        } else {
+            this.bounds = layer.getBounds();
+        }
+    }
+    
+    toggleLayer(layerName, visible) {
+        if (this.layerGroups[layerName]) {
+            if (visible) {
+                if (!this.map.hasLayer(this.layerGroups[layerName])) {
+                    this.layerGroups[layerName].addTo(this.map);
+                }
+            } else {
+                this.map.removeLayer(this.layerGroups[layerName]);
+            }
+        }
+    }
+    
+    zoomToExtent() {
+        if (this.bounds && this.bounds.isValid()) {
+            this.map.fitBounds(this.bounds, { padding: [20, 20] });
+        }
+    }
+    
+    async loadAllLayers() {
+        const loadingElement = document.getElementById('loading');
+        loadingElement.style.display = 'block';
+
+        try {
+            // Urutan sesuai permintaan
+            const layerOrder = [
+                'pendidikan', 'perdaganganjasa', 'peribadatan', // Sarana dan Prasarana
+                'jalan_lokal',                                  // Jaringan Jalan Infrastruktur
+                'lahan', 'bangunan',                            // Penggunaan Lahan (lahan di bawah bangunan)
+                'dimajar2_batas'                                // Area Kajian
+            ];
+            for (const layerName of layerOrder) {
+                await this.loadLayer(layerName);
+            }
+
+            setTimeout(() => {
+                this.zoomToExtent();
+            }, 500);
+
+        } catch (error) {
+            console.error('Error loading layers:', error);
+            this.showError('Failed to load some layers');
+        } finally {
+            loadingElement.style.display = 'none';
+        }
+    }
+    
+    showError(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
+        errorDiv.innerHTML = `
+            <div style="background: #ff6b6b; color: white; padding: 10px; border-radius: 5px; margin: 10px;">
+                <i class="fas fa-exclamation-triangle"></i> ${message}
+            </div>
+        `;
+        
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => {
+            document.body.removeChild(errorDiv);
+        }, 5000);
+    }
+    
+    getLayerFeatureCount(layerName) {
+        if (this.layers[layerName]) {
+            return this.layers[layerName].getLayers().length;
+        }
+        return 0;
+    }
+}

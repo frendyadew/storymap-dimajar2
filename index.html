@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Desa di Dimajar 2, Sumberarum</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 20px;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            border-bottom: 3px solid #667eea;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 700;
+            text-align: center;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(15px);
+            padding: 80px 20px 20px;
+            box-shadow: 2px 0 20px rgba(0,0,0,0.1);
+            z-index: 999;
+            overflow-y: auto;
+            border-right: 3px solid #667eea;
+        }
+
+        .control-group {
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .control-group h3 {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .basemap-selector select,
+        .layer-controls input,
+        .layer-controls label {
+            margin: 5px 0;
+        }
+
+        .basemap-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e6ed;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .basemap-selector select:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .layer-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .layer-item:hover {
+            background-color: rgba(102, 126, 234, 0.1);
+        }
+
+        .layer-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+            accent-color: #667eea;
+        }
+
+        .layer-item label {
+            cursor: pointer;
+            font-weight: 500;
+            color: #2c3e50;
+            flex-grow: 1;
+        }
+
+        .layer-legend {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-left: 10px;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        /* Map container */
+        .map-container {
+            flex: 1;
+            position: relative;
+            margin-top: 70px;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border-radius: 0 0 0 20px;
+            box-shadow: -5px 5px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Control buttons */
+        .map-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .control-btn:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .control-btn i {
+            font-size: 18px;
+        }
+
+        /* About modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            border: 3px solid #667eea;
+            position: relative;
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .modal h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .modal p {
+            line-height: 1.6;
+            color: #34495e;
+            margin-bottom: 15px;
+        }
+
+        /* Popup styling */
+        .leaflet-popup-content {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+        }
+
+        .popup-header {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+
+        .popup-content {
+            margin: 8px 0;
+        }
+
+        .popup-label {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 280px;
+            }
+            
+            .header h1 {
+                font-size: 20px;
+            }
+            
+            .modal-content {
+                margin: 10% auto;
+                padding: 20px;
+            }
+        }
+
+        /* Loading indicator */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            color: #667eea;
+            font-size: 18px;
+            display: none;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-map-marked-alt"></i> Peta Desa di Dimanjar 2, Sumberarum</h1>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <!-- Basemap Controls -->
+            <div class="control-group">
+                <h3><i class="fas fa-layer-group"></i> Basemap</h3>
+                <div class="basemap-selector">
+                    <select id="basemapSelect">
+                        <option value="osm">OpenStreetMap</option>
+                        <option value="esri">Esri World Imagery</option>
+                        <option value="google">Google Satellite</option>
+                        <option value="topo">OpenTopoMap</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Layer Controls -->
+            <div class="control-group">
+                <h3><i class="fas fa-list"></i> Layer List</h3>
+                <div class="layer-controls">
+                    <!-- Sarana dan Prasarana -->
+                    <div class="control-group">
+                        <h3><i class="fas fa-school"></i> Sarana dan Prasarana</h3>
+                        <div class="layer-item">
+                            <input type="checkbox" id="pendidikan" checked>
+                            <label for="pendidikan">Pendidikan</label>
+                            <div class="layer-legend" style="background-color: #45b7d1;"></div>
+                        </div>
+                        <div class="layer-item">
+                            <input type="checkbox" id="perdaganganjasa" checked>
+                            <label for="perdaganganjasa">Perdagangan & Jasa</label>
+                            <div class="layer-legend" style="background-color: #96ceb4;"></div>
+                        </div>
+                        <div class="layer-item">
+                            <input type="checkbox" id="peribadatan" checked>
+                            <label for="peribadatan">Peribadatan</label>
+                            <div class="layer-legend" style="background-color: #feca57;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Jaringan Infrastruktur Transportasi -->
+                    <div class="control-group">
+                        <h3><i class="fas fa-road"></i> Jaringan Jalan Infrastruktur</h3>
+                        <div class="layer-item">
+                            <input type="checkbox" id="jalan_lokal" checked>
+                            <label for="jalan_lokal">Jalan Lokal</label>
+                            <div class="layer-legend" style="background-color: #4ecdc4; height: 4px; border-radius: 2px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Penggunaan Lahan -->
+                    <div class="control-group">
+                        <h3><i class="fas fa-tree"></i> Penggunaan Lahan</h3>
+                        <div class="layer-item">
+                            <input type="checkbox" id="bangunan" checked>
+                            <label for="bangunan">Bangunan</label>
+                            <div class="layer-legend" style="background-color: #ff6b6b;"></div>
+                        </div>
+                        <div class="layer-item">
+                            <input type="checkbox" id="lahan" checked>
+                            <label for="lahan">Lahan</label>
+                            <div class="layer-legend" style="background-color: #888;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Area Kajian -->
+                    <div class="control-group">
+                        <h3><i class="fas fa-draw-polygon"></i> Area Kajian</h3>
+                        <div class="layer-item">
+                            <input type="checkbox" id="dimajar2_batas" checked>
+                            <label for="dimajar2_batas">Batas Administrasi Dimajar 2</label>
+                            <div class="layer-legend" style="background-color: #fff700; border-radius: 4px; border: 2px solid #f7b731;"></div>
+                        </div>
+                        <div style="margin-left:32px; margin-top:6px;">
+                            <label style="font-size:13px;">
+                                <input type="checkbox" id="batasFillToggle" style="margin-right:6px;">
+                                Enable Fill Warna Kuning
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map-container">
+            <div id="map"></div>
+            
+            <!-- Map Controls -->
+            <div class="map-controls">
+                <button class="control-btn" id="aboutBtn" title="About">
+                    <i class="fas fa-info"></i>
+                </button>
+                <button class="control-btn" id="measureBtn" title="Measure">
+                    <i class="fas fa-ruler"></i>
+                </button>
+                <button class="control-btn" id="homeBtn" title="Zoom to Extent">
+                    <i class="fas fa-home"></i>
+                </button>
+            </div>
+
+            <!-- Loading indicator -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>Loading layers...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-map-marked-alt"></i> Tentang Proyek</h2>
+            <p><strong>Judul:</strong> Peta Desa di Dimanjar 2, Sumberarum</p>
+            <p><strong>Lokasi:</strong> Desa Dimanjar 2, Sumberarum</p>
+            <p><strong>Deskripsi:</strong> Web map interaktif yang menampilkan informasi spasial desa meliputi sebaran bangunan, jaringan jalan lokal, serta fasilitas pendidikan, perdagangan & jasa, dan tempat peribadatan.</p>
+            <p><strong>Fitur:</strong></p>
+            <ul style="margin-left: 20px; line-height: 1.8;">
+                <li>Multiple basemap options (OpenStreetMap, Esri Imagery, Google Satellite)</li>
+                <li>Interactive layer control dengan simbologi yang disesuaikan</li>
+                <li>Pop-up informasi detail untuk setiap feature</li>
+                <li>Tool pengukuran jarak dan luas area</li>
+                <li>Responsive design untuk berbagai perangkat</li>
+            </ul>
+            <p><strong>Sumber Data:</strong> Data spasial hasil digitasi dan survey lapangan</p>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    
+    <!-- External JavaScript files -->
+    <script src="js/map-config.js"></script>
+    <script src="js/layer-manager.js"></script>
+    <script src="js/popup-handler.js"></script>
+    <script src="js/measure-tool.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
