@@ -1,4 +1,4 @@
-// Measure Tool
+// Measure Tool measure-tool.js
 class MeasureTool {
     constructor(map) {
         this.map = map;

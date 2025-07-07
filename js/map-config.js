@@ -1,4 +1,4 @@
-// Map Configuration
+// Map Configuration "map-config.js"
 const mapConfig = {
     // Default map center (adjust according to your area)
     center: [-7.8, 110.4], // Approximate coordinates for Yogyakarta area

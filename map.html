@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peta Interaktif | Desa Dimajar 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">
+            <a href="index.html"><i class="fas fa-map-marked-alt"></i> Peta Dimajar 2</a>
+        </div>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
+            <a href="map.html" class="nav-link active"><i class="fas fa-map"></i> Peta Interaktif</a>
+            <a href="fasilitas.html" class="nav-link"><i class="fas fa-building"></i> Fasilitas</a>
+        </div>
+    </nav>
+
+    <div class="map-page-container">
+        <div class="sidebar">
+            <div class="control-group">
+                <h3><i class="fas fa-layer-group"></i> Basemap</h3>
+                <div class="basemap-selector">
+                    <select id="basemapSelect">
+                        <option value="osm">OpenStreetMap</option>
+                        <option value="esri">Esri World Imagery</option>
+                        <option value="google">Google Satellite</option>
+                        <option value="topo">OpenTopoMap</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group-inner">
+                <h4><i class="fas fa-pencil-ruler"></i> Custom Feature</h4>
+                <div class="layer-item">
+                    <input type="checkbox" id="custom_feature" checked>
+                    <label for="custom_feature">Tampilkan Fitur Kustom</label>
+                </div>
+                <div style="margin-top: 10px;">
+                    <button id="saveCustomFeatures" class="save-btn">
+                        <i class="fas fa-save"></i> Simpan Gambar
+                    </button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3><i class="fas fa-list"></i> Layer List</h3>
+                <div class="layer-controls">
+                    <div class="control-group-inner">
+                        <h4><i class="fas fa-school"></i> Sarana dan Prasarana</h4>
+                        <div class="layer-item">
+                            <input type="checkbox" id="pendidikan" checked>
+                            <label for="pendidikan">Pendidikan</label>
+                            <div class="layer-legend" style="background-color: #45b7d1;"></div>
+                        </div>
+                        <div class="layer-item">
+                            <input type="checkbox" id="perdaganganjasa" checked>
+                            <label for="perdaganganjasa">Perdagangan & Jasa</label>
+                            <div class="layer-legend" style="background-color: #96ceb4;"></div>
+                        </div>
+                        <div class="layer-item">
+                            <input type="checkbox" id="peribadatan" checked>
+                            <label for="peribadatan">Peribadatan</label>
+                            <div class="layer-legend" style="background-color: #feca57;"></div>
+                        </div>
+                    </div>
+                    <div class="control-group-inner">
+                        <h4><i class="fas fa-road"></i> Jaringan Jalan</h4>
+                        <div class="layer-item">
+                            <input type="checkbox" id="jalan_lokal" checked>
+                            <label for="jalan_lokal">Jalan Lokal</label>
+                            <div class="layer-legend"
+                                style="background-color: #4ecdc4; height: 4px; border-radius: 2px;"></div>
+                        </div>
+                    </div>
+                    <div class="control-group-inner">
+                        <h4><i class="fas fa-tree"></i> Penggunaan Lahan</h4>
+                        <div class="layer-item">
+                            <input type="checkbox" id="bangunan" checked>
+                            <label for="bangunan">Bangunan</label>
+                            <div class="layer-legend" style="background-color: #ff6b6b;"></div>
+                        </div>
+                        <div class="layer-item">
+                            <input type="checkbox" id="lahan" checked>
+                            <label for="lahan">Lahan</label>
+                            <div class="layer-legend" style="background-color: #888;"></div>
+                        </div>
+                    </div>
+                    <div class="control-group-inner">
+                        <h4><i class="fas fa-draw-polygon"></i> Area Kajian</h4>
+                        <div class="layer-item">
+                            <input type="checkbox" id="dimajar2_batas">
+                            <label for="dimajar2_batas">Batas Administrasi</label>
+                            <div class="layer-legend"
+                                style="background-color: #fff700; border-radius: 4px; border: 2px solid #f7b731;"></div>
+                        </div>
+                        <div style="margin-left:32px; margin-top:6px;">
+                            <label class="small-label">
+                                <input type="checkbox" id="batasFillToggle" style="margin-right:6px;">
+                                Tampilkan Isian Area
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="map"></div>
+            <div class="map-controls">
+                <button class="control-btn" id="aboutBtn" title="About">
+                    <i class="fas fa-info"></i>
+                </button>
+                <button class="control-btn" id="measureBtn" title="Measure (Klik Kanan untuk Clear)">
+                    <i class="fas fa-ruler"></i>
+                </button>
+                <button class="control-btn" id="homeBtn" title="Zoom to Extent">
+                    <i class="fas fa-expand-arrows-alt"></i>
+                </button>
+            </div>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div>Memuat Layer...</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2><i class="fas fa-info-circle"></i> Tentang Peta Ini</h2>
+            <p><strong>Judul:</strong> Peta Desa di Dimajar 2, Sumberarum</p>
+            <p><strong>Deskripsi:</strong> Web map interaktif yang menampilkan informasi spasial desa meliputi sebaran
+                bangunan, jaringan jalan lokal, serta fasilitas pendidikan, perdagangan & jasa, dan tempat peribadatan.
+            </p>
+            <p><strong>Sumber Data:</strong> Data spasial hasil digitasi dan survey lapangan.</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+    <script src="js/map-config.js"></script>
+    <script src="js/popup-handler.js"></script>
+    <script src="js/measure-tool.js"></script>
+    <script src="js/layer-manager.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

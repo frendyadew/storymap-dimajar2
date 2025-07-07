@@ -1,4 +1,4 @@
-// Layer Manager
+// Layer Manager layer-manager.js
 class LayerManager {
     constructor(map) {
         this.map = map;

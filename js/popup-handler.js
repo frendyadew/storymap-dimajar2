@@ -1,4 +1,4 @@
-// Popup Handler
+// Popup Handler popup-handler.js
 class PopupHandler {
     constructor() {
         this.fieldMappings = {
