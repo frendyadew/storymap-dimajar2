@@ -265,45 +265,45 @@ class StoryMapApp {
         modal.style.display = 'block';
     }
 
-    addCustomControls() {
-        // Add attribution control
-        const attributionText = 'Data: Survey Lapangan | Visualisasi: Story Map';
-        L.control.attribution({
-            position: 'bottomright',
-            prefix: attributionText
-        }).addTo(this.map);
+    // addCustomControls() {
+    //     // Add attribution control
+    //     const attributionText = 'Data: Survey Lapangan | Visualisasi: Story Map';
+    //     L.control.attribution({
+    //         position: 'bottomright',
+    //         prefix: attributionText
+    //     }).addTo(this.map);
 
-        // Add custom control for layer statistics
-        const LayerStatsControl = L.Control.extend({
-            onAdd: function (map) {
-                const div = L.DomUtil.create('div', 'layer-stats-control');
-                div.style.cssText = `
-                    background: rgba(255, 255, 255, 0.9);
-                    padding: 10px;
-                    border-radius: 5px;
-                    font-size: 12px;
-                    line-height: 1.4;
-                    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                `;
+    //     // Add custom control for layer statistics
+    //     const LayerStatsControl = L.Control.extend({
+    //         onAdd: function (map) {
+    //             const div = L.DomUtil.create('div', 'layer-stats-control');
+    //             div.style.cssText = `
+    //                 background: rgba(255, 255, 255, 0.9);
+    //                 padding: 10px;
+    //                 border-radius: 5px;
+    //                 font-size: 12px;
+    //                 line-height: 1.4;
+    //                 box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    //             `;
 
-                this.update = function () {
-                    let html = '<strong>Layer Statistics:</strong><br>';
-                    Object.keys(mapConfig.dataSources).forEach(layerName => {
-                        const count = app.layerManager.getLayerFeatureCount(layerName);
-                        if (count > 0) {
-                            html += `${layerName}: ${count}<br>`;
-                        }
-                    });
-                    div.innerHTML = html;
-                };
+    //             this.update = function () {
+    //                 let html = '<strong>Layer Statistics:</strong><br>';
+    //                 Object.keys(mapConfig.dataSources).forEach(layerName => {
+    //                     const count = app.layerManager.getLayerFeatureCount(layerName);
+    //                     if (count > 0) {
+    //                         html += `${layerName}: ${count}<br>`;
+    //                     }
+    //                 });
+    //                 div.innerHTML = html;
+    //             };
 
-                return div;
-            }
-        });
+    //             return div;
+    //         }
+    //     });
 
-        this.statsControl = new LayerStatsControl({ position: 'topleft' });
-        this.statsControl.addTo(this.map);
-    }
+    //     this.statsControl = new LayerStatsControl({ position: 'topright' }); 
+    //     this.statsControl.addTo(this.map);
+    // }
 
     handleResize() {
         // Handle window resize
@@ -347,10 +347,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Add stats control after layers are loaded
     setTimeout(() => {
-        app.addCustomControls();
-        if (app.statsControl && app.statsControl.update) {
-            app.statsControl.update();
-        }
+        // app.addCustomControls();
+        // if (app.statsControl && app.statsControl.update) {
+        //     app.statsControl.update();
+        // }
     }, 2000);
 });
 
