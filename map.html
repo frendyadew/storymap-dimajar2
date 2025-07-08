@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
 </head>
 
 <body>
@@ -36,21 +35,6 @@
                     </select>
                 </div>
             </div>
-            <div class="control-group">
-                <div class="control-group-inner">
-                    <h4><i class="fas fa-pencil-ruler"></i> Custom Feature</h4>
-                    <div class="layer-item">
-                        <input type="checkbox" id="custom_feature" checked>
-                        <label for="custom_feature">Tampilkan Fitur Kustom</label>
-                    </div>
-                    <div style="margin-top: 10px;">
-                        <button id="saveCustomFeatures" class="save-btn">
-                            <i class="fas fa-save"></i> Simpan Gambar
-                        </button>
-                    </div>
-                </div>
-            </div>
-
             <div class="control-group">
                 <h3><i class="fas fa-list"></i> Layer List</h3>
                 <div class="layer-controls">
@@ -119,9 +103,6 @@
                 <button class="control-btn" id="aboutBtn" title="About">
                     <i class="fas fa-info"></i>
                 </button>
-                <button class="control-btn" id="measureBtn" title="Measure (Klik Kanan untuk Clear)">
-                    <i class="fas fa-ruler"></i>
-                </button>
                 <button class="control-btn" id="homeBtn" title="Zoom to Extent">
                     <i class="fas fa-expand-arrows-alt"></i>
                 </button>
@@ -146,10 +127,8 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <script src="js/map-config.js"></script>
     <script src="js/popup-handler.js"></script>
-    <script src="js/measure-tool.js"></script>
     <script src="js/layer-manager.js"></script>
     <script src="js/main.js"></script>
 </body>
