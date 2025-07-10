@@ -243,6 +243,27 @@
     <script src="js/popup-handler.js"></script>
     <script src="js/layer-manager.js"></script>
     <script src="js/main.js"></script>
+    <script>
+        // Modal logic
+        const aboutBtn = document.getElementById('aboutBtn');
+        const aboutModal = document.getElementById('aboutModal');
+        const closeBtn = aboutModal.querySelector('.close');
+
+        aboutBtn.addEventListener('click', () => {
+            aboutModal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            aboutModal.style.display = 'none';
+        });
+
+        // Optional: close modal if click outside modal-content
+        window.addEventListener('click', (e) => {
+            if (e.target === aboutModal) {
+                aboutModal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 
 </html>
