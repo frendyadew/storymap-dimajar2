@@ -119,29 +119,17 @@ class LayerManager {
 
     getLayerStyle(layerName, feature) {
         if (layerName === 'lahan') {
-            // Mapping warna berdasarkan keterangan
-            const colorMap = {
-                'Tempat Tinggal': '#b5ead7',
-                'Vegetasi Non Budidaya Lainnya': '#ffdac1',
-                'Perkebunan': '#ffb7b2',
-                'Pekarangan': '#b2cefe',
-                'Pendidikan': '#f7b731',
-                'Transportasi': '#c5cae9',
-                // tambahkan sesuai kebutuhan
-            };
             const keterangan = feature.properties?.KETERANGAN;
+            // Ambil warna dari color map terpusat di map-config.js
+            const fillColor = mapConfig.lahanColorMap[keterangan] || '#cccccc'; // Fallback color
+
             return {
-                color: '#888',
-                weight: 1.5,
-                fillOpacity: 1, // <-- solid
-                fillColor: colorMap[keterangan] || '#cccccc'
+                ...mapConfig.layerStyles.lahan, // Ambil style dasar (weight, opacity)
+                fillColor: fillColor // Timpa dengan warna spesifik kategori
             };
         }
         const style = mapConfig.layerStyles[layerName] || {};
-        return {
-            ...style,
-            className: `layer-${layerName}`
-        };
+        return { ...style, className: `layer-${layerName}` };
     }
 
     createPointLayer(layerName, feature, latlng) {
@@ -299,4 +287,41 @@ class LayerManager {
             }
         }
     }
+    // TAMBAHKAN FUNGSI BARU DI SINI
+    toggleBatasFill(showFill) {
+        const layerName = 'dimajar2_batas';
+        if (this.layers[layerName]) {
+            // Jika checkbox dicentang (showFill = true), atur opacity menjadi 0.4.
+            // Jika tidak, kembalikan menjadi 0 (transparan).
+            const newOpacity = showFill ? 0.4 : 0;
+            this.layers[layerName].setStyle({
+                fillOpacity: newOpacity
+            });
+        }
+    }
+
+    updateLayerStyle(layerName, styleOptions) {
+        const layer = this.layers[layerName];
+        if (!layer) return;
+
+        // 1. Simpan perubahan ke object mapConfig agar persist
+        Object.assign(mapConfig.layerStyles[layerName], styleOptions);
+
+        // 2. Terapkan style baru ke layer di peta
+        if (layer.setStyle) {
+            layer.setStyle(styleOptions);
+        }
+    }
+
+    updateLahanCategoryColor(keterangan, newColor) {
+    if (mapConfig.lahanColorMap && mapConfig.lahanColorMap[keterangan] !== undefined) {
+        // 1. Perbarui warna di dalam config terpusat
+        mapConfig.lahanColorMap[keterangan] = newColor;
+
+        // 2. Paksa layer 'lahan' untuk menggambar ulang stylenya
+        if (this.layers['lahan']) {
+            this.layers['lahan'].setStyle((feature) => this.getLayerStyle('lahan', feature));
+        }
+    }
+}
 }

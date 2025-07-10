@@ -27,6 +27,19 @@ const mapConfig = {
             maxZoom: 17
         }
     },
+
+    lahanColorMap: {
+        'Vegetasi Non Budidaya Lainnya': '#aed581',
+        'Tempat Tinggal': '#ef9a9a',
+        'Lahan Terbuka (Tanah Kosong)': '#bcaaa4',
+        'Transportasi': '#b0bec5',
+        'Perikanan air tawar': '#90caf9',
+        'Pekarangan': '#dce775',
+        'Sawah': '#81c784',
+        'Peribadatan': '#fff59d',
+        'Perkebunan': '#c5e1a5',
+        'Pendidikan': '#ffcc80'
+    },
     
     // Layer styles
     layerStyles: {

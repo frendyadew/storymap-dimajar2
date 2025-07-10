@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peta Interaktif | Desa Dimajar 2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
@@ -38,22 +39,49 @@
             <div class="control-group">
                 <h3><i class="fas fa-list"></i> Layer List</h3>
                 <div class="layer-controls">
+                    <div id="custom-layers-container">
+                    </div>
                     <div class="control-group-inner">
                         <h4><i class="fas fa-school"></i> Sarana dan Prasarana</h4>
                         <div class="layer-item">
                             <input type="checkbox" id="pendidikan" checked>
                             <label for="pendidikan">Pendidikan</label>
-                            <div class="layer-legend" style="background-color: #45b7d1;"></div>
+                            <div class="layer-legend" id="legend-pendidikan" style="background-color: #45b7d1;"></div>
+                            <button class="style-toggle-btn" data-target="style-controls-pendidikan"><i
+                                    class="fas fa-palette"></i></button>
+                        </div>
+                        <div class="style-controls" id="style-controls-pendidikan">
+                            <div class="control-row"><label>Warna</label><input type="color" id="color-pendidikan"
+                                    value="#45b7d1"></div>
+                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-pendidikan"
+                                    min="0" max="1" step="0.1" value="0.8"></div>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="perdaganganjasa" checked>
                             <label for="perdaganganjasa">Perdagangan & Jasa</label>
-                            <div class="layer-legend" style="background-color: #96ceb4;"></div>
+                            <div class="layer-legend" id="legend-perdaganganjasa" style="background-color: #96ceb4;">
+                            </div>
+                            <button class="style-toggle-btn" data-target="style-controls-perdaganganjasa"><i
+                                    class="fas fa-palette"></i></button>
+                        </div>
+                        <div class="style-controls" id="style-controls-perdaganganjasa">
+                            <div class="control-row"><label>Warna</label><input type="color" id="color-perdaganganjasa"
+                                    value="#96ceb4"></div>
+                            <div class="control-row"><label>Opacity</label><input type="range"
+                                    id="opacity-perdaganganjasa" min="0" max="1" step="0.1" value="0.8"></div>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="peribadatan" checked>
                             <label for="peribadatan">Peribadatan</label>
-                            <div class="layer-legend" style="background-color: #feca57;"></div>
+                            <div class="layer-legend" id="legend-peribadatan" style="background-color: #feca57;"></div>
+                            <button class="style-toggle-btn" data-target="style-controls-peribadatan"><i
+                                    class="fas fa-palette"></i></button>
+                        </div>
+                        <div class="style-controls" id="style-controls-peribadatan">
+                            <div class="control-row"><label>Warna</label><input type="color" id="color-peribadatan"
+                                    value="#feca57"></div>
+                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-peribadatan"
+                                    min="0" max="1" step="0.1" value="0.8"></div>
                         </div>
                     </div>
                     <div class="control-group-inner">
@@ -61,8 +89,16 @@
                         <div class="layer-item">
                             <input type="checkbox" id="jalan_lokal" checked>
                             <label for="jalan_lokal">Jalan Lokal</label>
-                            <div class="layer-legend"
-                                style="background-color: #4ecdc4; height: 4px; border-radius: 2px;"></div>
+                            <div class="layer-legend line-legend" id="legend-jalan_lokal"
+                                style="background-color: #4ecdc4;"></div>
+                            <button class="style-toggle-btn" data-target="style-controls-jalan_lokal"><i
+                                    class="fas fa-palette"></i></button>
+                        </div>
+                        <div class="style-controls" id="style-controls-jalan_lokal">
+                            <div class="control-row"><label>Warna</label><input type="color" id="color-jalan_lokal"
+                                    value="#4ecdc4"></div>
+                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-jalan_lokal"
+                                    min="0" max="1" step="0.1" value="0.8"></div>
                         </div>
                     </div>
                     <div class="control-group-inner">
@@ -70,12 +106,81 @@
                         <div class="layer-item">
                             <input type="checkbox" id="bangunan" checked>
                             <label for="bangunan">Bangunan</label>
-                            <div class="layer-legend" style="background-color: #ff6b6b;"></div>
+                            <div class="layer-legend" id="legend-bangunan" style="background-color: #ff6b6b;"></div>
+                            <button class="style-toggle-btn" data-target="style-controls-bangunan"><i
+                                    class="fas fa-palette"></i></button>
+                        </div>
+                        <div class="style-controls" id="style-controls-bangunan">
+                            <div class="control-row"><label>Warna</label><input type="color" id="color-bangunan"
+                                    value="#ff6b6b"></div>
+                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-bangunan"
+                                    min="0" max="1" step="0.1" value="1"></div>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="lahan" checked>
                             <label for="lahan">Lahan</label>
-                            <div class="layer-legend" style="background-color: #888;"></div>
+                            <div class="layer-legend" id="legend-lahan" style="background-color: #888;"></div>
+                            <button class="style-toggle-btn" data-target="style-controls-lahan"><i
+                                    class="fas fa-palette"></i></button>
+                        </div>
+                        <div class="style-controls" id="style-controls-lahan">
+                            <div class="control-row">
+                                <label>Opacity Global</label>
+                                <input type="range" id="opacity-lahan" min="0" max="1" step="0.1" value="1">
+                            </div>
+                            <hr class="style-hr">
+                            <div class="style-sub-list">
+                                <div class="control-row-cat">
+                                    <label>Vegetasi Non Budidaya Lainnya</label>
+                                    <input type="color" class="lahan-color-picker"
+                                        data-keterangan="Vegetasi Non Budidaya Lainnya" value="#aed581">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Tempat Tinggal</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Tempat Tinggal"
+                                        value="#ef9a9a">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Lahan Terbuka (Tanah Kosong)</label>
+                                    <input type="color" class="lahan-color-picker"
+                                        data-keterangan="Lahan Terbuka (Tanah Kosong)" value="#bcaaa4">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Transportasi</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Transportasi"
+                                        value="#b0bec5">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Perikanan air tawar</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Perikanan air tawar"
+                                        value="#90caf9">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Pekarangan</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Pekarangan"
+                                        value="#dce775">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Sawah</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Sawah"
+                                        value="#81c784">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Peribadatan</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Peribadatan"
+                                        value="#fff59d">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Perkebunan</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Perkebunan"
+                                        value="#c5e1a5">
+                                </div>
+                                <div class="control-row-cat">
+                                    <label>Pendidikan</label>
+                                    <input type="color" class="lahan-color-picker" data-keterangan="Pendidikan"
+                                        value="#ffcc80">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="control-group-inner">
@@ -83,14 +188,20 @@
                         <div class="layer-item">
                             <input type="checkbox" id="dimajar2_batas">
                             <label for="dimajar2_batas">Batas Administrasi</label>
-                            <div class="layer-legend"
-                                style="background-color: #fff700; border-radius: 4px; border: 2px solid #f7b731;"></div>
+                            <div class="layer-legend border-legend" id="legend-dimajar2_batas"
+                                style="border-color: #f7b731;"></div>
+                            <button class="style-toggle-btn" data-target="style-controls-dimajar2_batas"><i
+                                    class="fas fa-palette"></i></button>
                         </div>
                         <div style="margin-left:32px; margin-top:6px;">
-                            <label class="small-label">
-                                <input type="checkbox" id="batasFillToggle" style="margin-right:6px;">
-                                Tampilkan Isian Area
-                            </label>
+                            <label class="small-label"><input type="checkbox" id="batasFillToggle"
+                                    style="margin-right:6px;">Tampilkan Isian Area</label>
+                        </div>
+                        <div class="style-controls" id="style-controls-dimajar2_batas">
+                            <div class="control-row"><label>Warna Garis</label><input type="color"
+                                    id="color-dimajar2_batas" value="#f7b731"></div>
+                            <div class="control-row"><label>Opacity</label><input type="range"
+                                    id="opacity-dimajar2_batas" min="0" max="1" step="0.1" value="1"></div>
                         </div>
                     </div>
                 </div>
@@ -127,6 +238,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <script src="js/map-config.js"></script>
     <script src="js/popup-handler.js"></script>
     <script src="js/layer-manager.js"></script>
