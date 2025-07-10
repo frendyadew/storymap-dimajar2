@@ -32,8 +32,8 @@ WebGIS interaktif untuk visualisasi spasial Desa Dimanjar 2, Sumberarum. Peta in
    Tidak perlu server lokal, cukup double-click file.
 
 3. **Akses Online (GitHub Pages)**
-   - Jika repo sudah diaktifkan GitHub Pages, buka:  
-     `https://USERNAME.github.io/storymap-dimajar2/`
+   - GitHub Pages:  
+     `https://frendyadew.github.io/storymap-dimajar2/`
 
 ---
 
