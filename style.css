@@ -736,6 +736,33 @@ body {
     left: 320px; /* Lebar sidebar (320px) + 20px jarak */
 }
 
+.info-card-link {
+    text-decoration: none;
+    color: inherit; /* Mewarisi warna teks dari parent */
+}
+
+/* --- Style untuk daftar tim di dalam modal --- */
+.team-list {
+    list-style-type: none; /* Hilangkan bullet points */
+    padding-left: 0;
+    margin-top: 20px;
+}
+
+.team-list li {
+    background-color: var(--bg-primary);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border-left: 4px solid var(--accent-secondary);
+    color: var(--text-secondary);
+}
+
+.team-list li strong {
+    color: var(--text-primary);
+    display: block; /* Agar nama dan NIM terpisah baris */
+    margin-bottom: 5px;
+}
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }

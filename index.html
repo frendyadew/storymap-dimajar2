@@ -41,23 +41,29 @@
         <section class="info-section">
             <h2>Tentang Proyek Peta Digital Ini</h2>
             <p>
-                Web map ini adalah sebuah platform interaktif yang dirancang untuk menyajikan informasi geospasial mengenai Desa Dimajar 2, Kelurahan Sumberarum. Tujuan utama dari proyek ini adalah untuk memvisualisasikan data penting desa, yang dapat diakses dengan mudah oleh warga, aparat desa, maupun pihak yang berkepentingan.
+                Ini adalah webgis hasil PKL 2 yang memetakan area kajian Dusun Dimajar 2. Platform interaktif ini dirancang untuk menyajikan informasi geospasial penting desa, yang dapat diakses dengan mudah oleh warga, aparat desa, maupun pihak yang berkepentingan.
             </p>
             <div class="info-grid">
-                <div class="info-card">
-                    <i class="fas fa-layer-group"></i>
-                    <h3>Data Spasial Lengkap</h3>
-                    <p>Menyajikan berbagai lapisan data, termasuk penggunaan lahan, bangunan, jaringan jalan, batas administrasi, serta lokasi fasilitas umum.</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-mouse-pointer"></i>
-                    <h3>Interaktivitas</h3>
-                    <p>Pengguna dapat menampilkan atau menyembunyikan lapisan data, mendapatkan informasi detail dari setiap objek di peta, dan menggunakan berbagai pilihan basemap.</p>
-                </div>
-                <div class="info-card">
-                    <i class="fas fa-tools"></i>
-                    <h3>Fitur Pendukung</h3>
-                    <p>Dilengkapi dengan alat bantu interaktif untuk membantu analisis sederhana langsung dari peta.</p>
+                <a href="map.html" class="info-card-link">
+                    <div class="info-card">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Jelajahi Peta</h3>
+                        <p>Buka peta interaktif untuk melihat data spasial lengkap, termasuk penggunaan lahan, sebaran fasilitas, dan jaringan jalan di Dimajar 2.</p>
+                    </div>
+                </a>
+
+                <a href="fasilitas.html" class="info-card-link">
+                    <div class="info-card">
+                        <i class="fas fa-building"></i>
+                        <h3>Lihat Detail Fasilitas</h3>
+                        <p>Dapatkan ringkasan dan tabel data mengenai jumlah dan jenis fasilitas umum yang tersedia di area kajian.</p>
+                    </div>
+                </a>
+
+                <div class="info-card" id="teamInfoCard" style="cursor: pointer;">
+                    <i class="fas fa-users"></i>
+                    <h3>Tim Penyusun</h3>
+                    <p>Proyek ini disusun oleh tim mahasiswa sebagai bagian dari program Praktik Kerja Lapangan. Klik untuk melihat anggota tim.</p>
                 </div>
             </div>
             <div class="call-to-action">
@@ -67,8 +73,22 @@
         </section>
     </main>
 
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTeamModal">&times;</span>
+            <h2><i class="fas fa-users"></i> Tim Penyusun</h2>
+            <ul class="team-list">
+                <li><strong>Aca Cintiya Bela</strong> - 23/515886/SV/22634</li>
+                <li><strong>Alifah Khairur Rizky</strong> - 23/515178/SV/22490</li>
+                <li><strong>Arum Pradana</strong> - 23/514595/SV/22387</li>
+                <li><strong>Frendy Ade Wicaksono</strong> - 23/523180/SV/23868</li>
+            </ul>
+        </div>
+    </div>
+
+
     <script>
-        // Simple Slideshow Logic
+        // --- Logic untuk Slideshow ---
         let slideIndex = 0;
         showSlides();
 
@@ -82,6 +102,28 @@
             if (slideIndex > slides.length) { slideIndex = 1 }
             slides[slideIndex - 1].style.display = "block";
             setTimeout(showSlides, 4000); // Ganti gambar setiap 4 detik
+        }
+
+        // --- Logic untuk Modal Tim ---
+        const teamModal = document.getElementById('teamModal');
+        const teamCard = document.getElementById('teamInfoCard');
+        const closeBtn = document.getElementById('closeTeamModal');
+
+        // Tampilkan modal saat card diklik
+        teamCard.onclick = function() {
+            teamModal.style.display = "block";
+        }
+
+        // Sembunyikan modal saat tombol close (x) diklik
+        closeBtn.onclick = function() {
+            teamModal.style.display = "none";
+        }
+
+        // Sembunyikan modal saat area di luar modal diklik
+        window.onclick = function(event) {
+            if (event.target == teamModal) {
+                teamModal.style.display = "none";
+            }
         }
     </script>
 </body>
