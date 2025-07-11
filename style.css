@@ -3,14 +3,14 @@
 
 /* CSS Variables for Dark Theme */
 :root {
-    --bg-primary: #1a1a2e;
-    --bg-secondary: #16213e;
-    --bg-tertiary: #0f3460;
+    --bg-primary: #1a2e2a;
+    --bg-secondary: #164538;
+    --bg-tertiary: #145e43;
     --text-primary: #e9ecef;
     --text-secondary: #adb5bd;
-    --accent-primary: #33c2ff;
+    --accent-primary: #20b581;
     --accent-secondary: #16a085;
-    --border-color: #2c3e50;
+    --border-color: #2c503b;
     --shadow-color: rgba(0, 0, 0, 0.4);
 }
 
@@ -34,7 +34,7 @@ body {
     justify-content: space-between;
     align-items: center;
     /* Ganti background-color ke rgba untuk transparansi */
-    background-color: rgba(22, 33, 62, 0.85); /* opacity 85% */
+    background-color: rgba(20, 49, 44, 0.85); /* opacity 85% */
     /* Tambahkan backdrop-filter untuk efek blur */
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
@@ -114,7 +114,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to top, rgba(26, 26, 46, 0.8), rgba(26, 26, 46, 0.2));
+    background: linear-gradient(to top, rgba(26, 51, 31, 0.8), rgba(22, 44, 38, 0.2));
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -298,7 +298,7 @@ body {
     /* -- AKHIR PERUBAHAN UTAMA -- */
     
     width: 320px;
-    background: rgba(22, 33, 62, 0.75);
+    background: rgba(22, 62, 51, 0.75);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     padding: 1rem;
@@ -475,7 +475,7 @@ body {
     transform: translate(-50%, -50%);
     z-index: 1000;
     color: var(--text-primary);
-    background: rgba(26, 26, 46, 0.9);
+    background: rgba(26, 46, 43, 0.9);
     padding: 20px;
     border-radius: 10px;
     text-align: center;
