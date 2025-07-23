@@ -1,8 +1,8 @@
 // Map Configuration "map-config.js"
 const mapConfig = {
     // Default map center (adjust according to your area)
-    center: [-7.8, 110.4], // Approximate coordinates for Yogyakarta area
-    zoom: 15,
+    center: [-7.569, 110.179], 
+    zoom: 16,
     
     // Basemap definitions
     basemaps: {
@@ -38,7 +38,12 @@ const mapConfig = {
         'Sawah': '#81c784',
         'Peribadatan': '#fff59d',
         'Perkebunan': '#c5e1a5',
-        'Pendidikan': '#ffcc80'
+        'Pendidikan': '#ffcc80',
+        'Sungai': '#aadef0',
+        'Industri dan Perdagangan': '#c7b2de',
+        'Kebun Campur': '#a2b975',
+        'Pos Ronda': '#f5deb3',
+        'Rumput': '#c0d581'
     },
     
     // Layer styles
@@ -46,9 +51,9 @@ const mapConfig = {
         bangunan: {
             fillColor: '#ff6b6b',
             color: '#c92a2a',
-            weight: 2,
+            weight: 1,
             opacity: 1,
-            fillOpacity: 1
+            fillOpacity: 0.85
         },
         jalan_lokal: {
             color: '#4ecdc4',
@@ -79,6 +84,29 @@ const mapConfig = {
             opacity: 1,
             fillOpacity: 0.8
         },
+        industri_pergudangan: {
+             radius: 8,
+             fillColor: '#8e44ad',
+             color: '#6a1b9a',
+             weight: 2,
+             opacity: 1,
+             fillOpacity: 0.8
+        },
+        sungai: {
+            fillColor: '#3498db',
+            color: '#2980b9',
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.7
+        },
+        area_rt: {
+            color: '#ff17ab',
+            weight: 2.5,
+            fill: true,
+            fillColor: '#ff17ab',
+            fillOpacity: 0.35,
+            dashArray: '5, 5'
+        },
         dimajar2_batas: {
             color: '#f7b731',
             weight: 3,
@@ -90,7 +118,6 @@ const mapConfig = {
             color: '#888',
             weight: 1.5,
             fillOpacity: 1
-            // fillColor akan diatur dinamis di layer-manager.js
         }
     },
     
@@ -102,6 +129,9 @@ const mapConfig = {
         pendidikan: 'data/pendidikan.geojson',
         perdaganganjasa: 'data/perdaganganjasa.geojson',
         peribadatan: 'data/peribadatan.geojson',
+        industri_pergudangan: 'data/industri_pergudangan.geojson',
+        sungai: 'data/sungai.geojson',
+        area_rt: 'data/area_rt.geojson',
         dimajar2_batas: 'data/dimajar2_batas.geojson'
     }
 };

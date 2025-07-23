@@ -5,36 +5,27 @@ class StoryMapApp {
         this.layerManager = null;
         this.currentBasemap = 'google';
 
-        // Variabel baru untuk fitur custom yang digambar
         this.drawnItems = null;
         this.drawControl = null;
-        this.customFeatureCounter = 1; // Penghitung untuk nama layer
-        this.drawnLayers = {}; // Objek untuk menyimpan referensi layer yang digambar
+        this.customFeatureCounter = 1;
+        this.drawnLayers = {};
 
         this.initializeMap();
         this.initializeControls();
-        this.initializeDraw(); // Method baru untuk Leaflet Draw
+        this.initializeDraw();
         this.loadLayers();
     }
 
     initializeMap() {
-        // Create map
         this.map = L.map('map', {
             center: mapConfig.center,
             zoom: mapConfig.zoom,
             zoomControl: false
         });
 
-        // Add zoom control to bottom right
         L.control.zoom({ position: 'bottomright' }).addTo(this.map);
-
-        // Add scale control
         L.control.scale({ position: 'bottomleft', metric: true, imperial: false }).addTo(this.map);
-
-        // Set initial basemap
         this.setBasemap(this.currentBasemap);
-
-        // Initialize managers
         this.layerManager = new LayerManager(this.map);
     }
 
@@ -63,39 +54,20 @@ class StoryMapApp {
         });
         this.map.addControl(this.drawControl);
 
-        // -- UPDATE: Logika prompt nama sekarang berlaku untuk semua jenis gambar --
         this.map.on(L.Draw.Event.CREATED, (e) => {
             const layer = e.layer;
             const layerType = e.layerType;
-            let featureName = null;
-            let defaultPromptName = '';
-
-            // Tentukan nama default yang lebih baik berdasarkan tipe gambar
-            switch (layerType) {
-                case 'marker':
-                    defaultPromptName = `Titik ${this.customFeatureCounter}`;
-                    break;
-                case 'polyline':
-                    defaultPromptName = `Garis ${this.customFeatureCounter}`;
-                    break;
-                case 'polygon':
-                case 'rectangle':
-                    defaultPromptName = `Area ${this.customFeatureCounter}`;
-                    break;
+            let defaultPromptName = `Fitur ${this.customFeatureCounter}`;
+            
+            const featureName = prompt("Masukkan Nama Fitur:", defaultPromptName);
+            if (!featureName) {
+                return;
             }
             
-            // Tampilkan prompt untuk semua jenis gambar
-            featureName = prompt("Masukkan Nama Fitur:", defaultPromptName);
-            if (!featureName) { // Jika pengguna menekan "Cancel" atau mengosongkan nama
-                return; // Batalkan penambahan fitur
-            }
-            
-            // Ikat nama ke popup
             layer.bindPopup(featureName);
-            
-            // Lanjutkan proses
             this.drawnItems.addLayer(layer);
             this._addCustomLayerUI(layer, layerType, featureName);
+            this.customFeatureCounter++;
         });
         
         this.map.on(L.Draw.Event.DELETED, (e) => {
@@ -112,12 +84,9 @@ class StoryMapApp {
         });
     }
     
-    _addCustomLayerUI(layer, type, customName) {
+     _addCustomLayerUI(layer, type, customName) {
         const layerId = L.Util.stamp(layer);
-        
-        const layerName = customName || `Custom Feature ${this.customFeatureCounter++}`;
         this.drawnLayers[layerId] = layer;
-
         const defaultColor = type === 'polyline' ? '#4ecdc4' : (type === 'marker' ? '#feca57' : '#ff6b6b');
 
         const container = document.getElementById('custom-layers-container');
@@ -128,7 +97,7 @@ class StoryMapApp {
         itemDiv.innerHTML = `
             <div class="layer-item">
                 <input type="checkbox" id="custom-${layerId}" checked>
-                <label for="custom-${layerId}">${layerName}</label>
+                <label for="custom-${layerId}">${customName}</label>
                 <div class="layer-legend" style="background-color: ${defaultColor};"></div>
                 <button class="style-toggle-btn" data-target="style-controls-custom-${layerId}"><i class="fas fa-palette"></i></button>
             </div>
@@ -139,39 +108,29 @@ class StoryMapApp {
         `;
         container.appendChild(itemDiv);
 
-        const checkbox = itemDiv.querySelector(`#custom-${layerId}`);
-        checkbox.addEventListener('change', (e) => {
-            if (e.target.checked) {
-                this.drawnItems.addLayer(this.drawnLayers[layerId]);
-            } else {
-                this.drawnItems.removeLayer(this.drawnLayers[layerId]);
-            }
+        itemDiv.querySelector(`#custom-${layerId}`).addEventListener('change', (e) => {
+            if (e.target.checked) this.drawnItems.addLayer(this.drawnLayers[layerId]);
+            else this.drawnItems.removeLayer(this.drawnLayers[layerId]);
         });
 
-        const toggleBtn = itemDiv.querySelector('.style-toggle-btn');
-        const styleControls = itemDiv.querySelector('.style-controls');
-        toggleBtn.addEventListener('click', () => {
+        itemDiv.querySelector('.style-toggle-btn').addEventListener('click', (e) => {
+            const targetId = e.currentTarget.dataset.target;
+            const styleControls = document.getElementById(targetId);
             styleControls.style.display = styleControls.style.display === 'none' ? 'block' : 'none';
         });
 
-        const colorInput = itemDiv.querySelector('input[type="color"]');
-        colorInput.addEventListener('input', (e) => {
-            const styleProp = (type === 'polyline' || type === 'marker') ? 'color' : 'fillColor';
-            if (type === 'marker') {
-                // Untuk marker standar, warna diatur via L.Icon, bukan setStyle.
-                // Kode ini hanya akan efektif jika Anda menggunakan L.CircleMarker.
-            } else {
-                 this.drawnLayers[layerId].setStyle({ [styleProp]: e.target.value });
-            }
+        itemDiv.querySelector('input[type="color"]').addEventListener('input', (e) => {
+            const styleProp = (type === 'polyline') ? 'color' : 'fillColor';
+            this.drawnLayers[layerId].setStyle({ [styleProp]: e.target.value });
             itemDiv.querySelector('.layer-legend').style.backgroundColor = e.target.value;
         });
         
-        const opacityInput = itemDiv.querySelector('input[type="range"]');
-        opacityInput.addEventListener('input', (e) => {
-            const styleProp = (type === 'polyline' || type === 'marker') ? 'opacity' : 'fillOpacity';
+        itemDiv.querySelector('input[type="range"]').addEventListener('input', (e) => {
+            const styleProp = (type === 'polyline') ? 'opacity' : 'fillOpacity';
             this.drawnLayers[layerId].setStyle({ [styleProp]: parseFloat(e.target.value) });
         });
     }
+
 
     initializeControls() {
         const basemapSelect = document.getElementById('basemapSelect');
@@ -185,62 +144,57 @@ class StoryMapApp {
             }
         });
 
-        Object.keys(mapConfig.dataSources).forEach(layerName => {
-            const styleToggleBtn = document.querySelector(`[data-target="style-controls-${layerName}"]`);
-            const styleControlsDiv = document.getElementById(`style-controls-${layerName}`);
-
-            if (styleToggleBtn && styleControlsDiv) {
-                styleToggleBtn.addEventListener('click', () => {
-                    const isVisible = styleControlsDiv.style.display === 'block';
-                    styleControlsDiv.style.display = isVisible ? 'none' : 'block';
-                });
-            }
-
-            if (layerName === 'lahan') {
-                const opacityInput = document.getElementById(`opacity-lahan`);
-                if (opacityInput) {
-                    opacityInput.addEventListener('input', (e) => {
-                        this.layerManager.updateLayerStyle('lahan', { fillOpacity: parseFloat(e.target.value) });
-                    });
+        document.querySelectorAll('.style-toggle-btn').forEach(button => {
+             button.addEventListener('click', (e) => {
+                const targetId = e.currentTarget.dataset.target;
+                const controls = document.getElementById(targetId);
+                if (controls) {
+                    controls.style.display = controls.style.display === 'none' ? 'block' : 'none';
                 }
-                const lahanColorPickers = document.querySelectorAll('.lahan-color-picker');
-                lahanColorPickers.forEach(picker => {
-                    picker.addEventListener('input', (e) => {
-                        this.layerManager.updateLahanCategoryColor(e.target.dataset.keterangan, e.target.value);
-                    });
-                });
+            });
+        });
+
+        Object.keys(mapConfig.layerStyles).forEach(layerName => {
+            if (layerName === 'lahan') {
+                 document.getElementById(`opacity-lahan`)?.addEventListener('input', (e) => this.layerManager.updateLayerStyle('lahan', { fillOpacity: parseFloat(e.target.value) }));
+                 document.querySelectorAll('.lahan-color-picker').forEach(picker => picker.addEventListener('input', (e) => this.layerManager.updateLahanCategoryColor(e.target.dataset.keterangan, e.target.value)));
             } else {
                 const colorInput = document.getElementById(`color-${layerName}`);
                 const opacityInput = document.getElementById(`opacity-${layerName}`);
                 const legend = document.getElementById(`legend-${layerName}`);
+
                 if (colorInput) {
                     colorInput.addEventListener('input', (e) => {
                         const newColor = e.target.value;
-                        const styleProp = (layerName === 'jalan_lokal' || layerName === 'dimajar2_batas') ? 'color' : 'fillColor';
+                        const isLine = layerName.includes('jalan') || layerName.includes('batas');
+                        const isAreaRT = layerName === 'area_rt';
+                        let styleProp = isLine ? 'color' : 'fillColor';
+                        if (isAreaRT) styleProp = 'fillColor';
+
                         this.layerManager.updateLayerStyle(layerName, { [styleProp]: newColor });
+                        
+                        if(layerName === 'area_rt') { // Also update border for area_rt
+                             this.layerManager.updateLayerStyle(layerName, { color: newColor });
+                        }
+
                         if (legend) {
-                            if (layerName === 'dimajar2_batas') {
-                                legend.style.borderColor = newColor;
-                            } else {
-                                legend.style.backgroundColor = newColor;
-                            }
+                            if (layerName === 'dimajar2_batas') legend.style.borderColor = newColor;
+                            else legend.style.backgroundColor = newColor;
                         }
                     });
                 }
                 if (opacityInput) {
                     opacityInput.addEventListener('input', (e) => {
                         const newOpacity = parseFloat(e.target.value);
-                        const styleProp = (layerName === 'jalan_lokal' || layerName === 'dimajar2_batas') ? 'opacity' : 'fillOpacity';
+                        const isLine = layerName.includes('jalan') || layerName.includes('batas');
+                        let styleProp = isLine ? 'opacity' : 'fillOpacity';
                         this.layerManager.updateLayerStyle(layerName, { [styleProp]: newOpacity });
                     });
                 }
             }
         });
 
-        const batasFillCheckbox = document.getElementById('batasFillToggle');
-        if (batasFillCheckbox) {
-            batasFillCheckbox.addEventListener('change', (e) => this.layerManager.toggleBatasFill(e.target.checked));
-        }
+        document.getElementById('batasFillToggle')?.addEventListener('change', (e) => this.layerManager.toggleBatasFill(e.target.checked));
         document.getElementById('aboutBtn').addEventListener('click', () => this.showAboutModal());
         document.getElementById('homeBtn').addEventListener('click', () => this.layerManager.zoomToExtent());
     }
@@ -263,25 +217,7 @@ class StoryMapApp {
     }
 
     async loadLayers() {
-        try {
-            await this.layerManager.loadAllLayers();
-            this.updateLayerInfo();
-        } catch (error) {
-            console.error('Error loading layers:', error);
-        }
-    }
-
-    updateLayerInfo() {
-        Object.keys(mapConfig.dataSources).forEach(layerName => {
-            const count = this.layerManager.getLayerFeatureCount(layerName);
-            const label = document.querySelector(`label[for="${layerName}"]`);
-            if (label && count > 0) {
-                const currentText = label.textContent.split(' (')[0];
-                if (currentText) {
-                    label.textContent = `${currentText} (${count})`;
-                }
-            }
-        });
+        await this.layerManager.loadAllLayers();
     }
 
     showAboutModal() {
@@ -290,7 +226,6 @@ class StoryMapApp {
     }
 }
 
-// Initialize application when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     window.app = new StoryMapApp();
 });
