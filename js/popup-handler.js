@@ -2,7 +2,8 @@
 class PopupHandler {
     constructor() {
         this.fieldMappings = {
-            bangunan: ['Fungsi_Ban', 'Nama_Pemil', 'Kepemilika', 'Jumlah_Pen', 'Mata_Penca', 'Jenis_Mate', 'Kelayakan'],
+            // DIUBAH: Menambahkan Shape_Area, RT, dan RW untuk bangunan
+            bangunan: ['Fungsi_Ban', 'Nama_Pemil', 'Kepemilika', 'Jumlah_Pen', 'Mata_Penca', 'Jenis_Mate', 'Kelayakan', 'Shape_Area', 'RT', 'RW'],
             jalan_lokal: ['Nama', 'KETERANGAN', 'SHAPE_Length'],
             pendidikan: ['KETERANGAN'],
             perdaganganjasa: ['KETERANGAN'],
@@ -25,7 +26,11 @@ class PopupHandler {
             'Mata_Penca': 'Mata Pencaharian',
             'Jenis_Mate': 'Material',
             'Kelayakan': 'Kelayakan Hunian',
-            'Nama': 'Nama Jalan'
+            'Nama': 'Nama Jalan',
+            // BARU: Menambahkan label untuk field baru
+            'Shape_Area': 'Luas Bangunan (m²)',
+            'RT': 'RT',
+            'RW': 'RW'
         };
     }
     
@@ -35,20 +40,41 @@ class PopupHandler {
         }
         const props = feature.properties;
         const geomType = feature.geometry.type;
-
         const layerType = layerName;
 
         let content = `<div class="popup-header">${this.getLayerDisplayName(layerType)}</div>`;
         content += '<div class="popup-content">';
+        
+        // BARU: Logika khusus untuk menampilkan RT/RW gabungan di bangunan
+        if (layerType === 'bangunan' && props.RT && props.RW) {
+            content += `
+                <div style="margin: 5px 0;">
+                    <span class="popup-label">Lokasi:</span> RT ${props.RT} / RW ${props.RW}
+                </div>
+            `;
+        }
+
         const fields = this.fieldMappings[layerType] || Object.keys(props);
 
         fields.forEach(field => {
+            // BARU: Skip RT dan RW karena sudah digabungkan di atas
+            if ((layerType === 'bangunan' && (field === 'RT' || field === 'RW'))) {
+                return;
+            }
+
             if (props[field] !== undefined && props[field] !== null && props[field] !== '' && props[field] !== ' ') {
                 const label = this.fieldLabels[field] || field;
                 let value = props[field];
-                if (typeof value === 'number' && (field.includes('SHAPE_') || field.includes('Luas') || field.includes('Panjang'))) {
-                    value = this.formatNumber(value);
+                
+                // DIUBAH: Logika format angka diperbarui
+                if (typeof value === 'number') {
+                    if (field === 'Shape_Area') { // Khusus luas bangunan, 1 desimal
+                        value = value.toLocaleString('id-ID', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+                    } else if (field.includes('SHAPE_') || field.includes('Luas') || field.includes('Panjang')) { // Lainnya, 2 desimal
+                        value = this.formatNumber(value);
+                    }
                 }
+
                 content += `
                     <div style="margin: 5px 0;">
                         <span class="popup-label">${label}:</span> ${value}
@@ -58,7 +84,6 @@ class PopupHandler {
         });
         
         content += '</div>';
-        
         return content;
     }
     
@@ -72,7 +97,8 @@ class PopupHandler {
             industri_pergudangan: 'Industri & Pergudangan',
             sungai: 'Sungai',
             area_rt: 'Batas RT',
-            lahan: 'Informasi Lahan'
+            lahan: 'Informasi Lahan',
+            dimajar2_batas: 'Batas Administrasi' // BARU
         };
         
         return displayNames[layerType] || 'Informasi Fitur';

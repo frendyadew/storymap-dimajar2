@@ -22,17 +22,12 @@
     </nav>
 
     <main class="main-content">
-        <div class="slideshow-container">
-            <div class="slide fade">
-                <img src="images/1.png" alt="Suasana Desa Dimajar 2">
-            </div>
-            <div class="slide fade">
-                <img src="images/2.png" alt="Pemandangan di Sumberarum">
-            </div>
-            <div class="slide fade">
-                <img src="images/3.jpg" alt="Infrastruktur Desa">
-            </div>
-            <div class="slideshow-overlay">
+        <div class="video-container">
+            <video autoplay muted loop playsinline class="hero-video">
+                <source src="videos/drone.mp4" type="video/mp4">
+                Browser Anda tidak mendukung pemutaran video.
+            </video>
+            <div class="video-overlay">
                 <h1>Selamat Datang di Peta Digital Desa Dimajar 2, Sumberarum</h1>
                 <p>Menjelajahi Potensi dan Fasilitas Desa Melalui Visualisasi Geospasial</p>
             </div>
@@ -41,14 +36,17 @@
         <section class="info-section">
             <h2>Tentang Proyek Peta Digital Ini</h2>
             <p>
-                Ini adalah webgis hasil PKL 2 yang memetakan area kajian Dusun Dimajar 2. Platform interaktif ini dirancang untuk menyajikan informasi geospasial penting desa, yang dapat diakses dengan mudah oleh warga, aparat desa, maupun pihak yang berkepentingan.
+                Ini adalah webgis hasil PKL 2 yang memetakan area kajian Dusun Dimajar 2. Platform interaktif ini
+                dirancang untuk menyajikan informasi geospasial penting desa, yang dapat diakses dengan mudah oleh
+                warga, aparat desa, maupun pihak yang berkepentingan.
             </p>
             <div class="info-grid">
                 <a href="map.html" class="info-card-link">
                     <div class="info-card">
                         <i class="fas fa-map-marked-alt"></i>
                         <h3>Jelajahi Peta</h3>
-                        <p>Buka peta interaktif untuk melihat data spasial lengkap, termasuk penggunaan lahan, sebaran fasilitas, dan jaringan jalan di Dimajar 2.</p>
+                        <p>Buka peta interaktif untuk melihat data spasial lengkap, termasuk penggunaan lahan, sebaran
+                            fasilitas, dan jaringan jalan di Dimajar 2.</p>
                     </div>
                 </a>
 
@@ -56,14 +54,16 @@
                     <div class="info-card">
                         <i class="fas fa-building"></i>
                         <h3>Lihat Detail Fasilitas</h3>
-                        <p>Dapatkan ringkasan dan tabel data mengenai jumlah dan jenis fasilitas umum yang tersedia di area kajian.</p>
+                        <p>Dapatkan ringkasan dan tabel data mengenai jumlah dan jenis fasilitas umum yang tersedia di
+                            area kajian.</p>
                     </div>
                 </a>
 
                 <div class="info-card" id="teamInfoCard" style="cursor: pointer;">
                     <i class="fas fa-users"></i>
                     <h3>Tim Penyusun</h3>
-                    <p>Proyek ini disusun oleh tim mahasiswa sebagai bagian dari program Praktik Kerja Lapangan. Klik untuk melihat anggota tim.</p>
+                    <p>Proyek ini disusun oleh tim mahasiswa sebagai bagian dari program Praktik Kerja Lapangan. Klik
+                        untuk melihat anggota tim.</p>
                 </div>
             </div>
             <div class="call-to-action">
@@ -88,39 +88,30 @@
 
 
     <script>
-        // --- Logic untuk Slideshow ---
-        let slideIndex = 0;
-        showSlides();
-
-        function showSlides() {
-            let i;
-            let slides = document.getElementsByClassName("slide");
-            for (i = 0; i < slides.length; i++) {
-                slides[i].style.display = "none";
-            }
-            slideIndex++;
-            if (slideIndex > slides.length) { slideIndex = 1 }
-            slides[slideIndex - 1].style.display = "block";
-            setTimeout(showSlides, 4000); // Ganti gambar setiap 4 detik
-        }
+        // DIHAPUS: Blok JavaScript untuk slideshow yang menyebabkan error telah dihapus.
 
         // --- Logic untuk Modal Tim ---
         const teamModal = document.getElementById('teamModal');
         const teamCard = document.getElementById('teamInfoCard');
         const closeBtn = document.getElementById('closeTeamModal');
 
-        // Tampilkan modal saat card diklik
-        teamCard.onclick = function() {
-            teamModal.style.display = "block";
+        if (teamCard) { // Tambahkan pengecekan untuk memastikan elemen ada
+            // Tampilkan modal saat card diklik
+            teamCard.onclick = function () {
+                teamModal.style.display = "block";
+            }
+        }
+        
+        if (closeBtn) { // Tambahkan pengecekan
+            // Sembunyikan modal saat tombol close (x) diklik
+            closeBtn.onclick = function () {
+                teamModal.style.display = "none";
+            }
         }
 
-        // Sembunyikan modal saat tombol close (x) diklik
-        closeBtn.onclick = function() {
-            teamModal.style.display = "none";
-        }
 
         // Sembunyikan modal saat area di luar modal diklik
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target == teamModal) {
                 teamModal.style.display = "none";
             }

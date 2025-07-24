@@ -33,9 +33,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    /* Ganti background-color ke rgba untuk transparansi */
-    background-color: rgba(20, 49, 44, 0.85); /* opacity 85% */
-    /* Tambahkan backdrop-filter untuk efek blur */
+    background-color: rgba(20, 49, 44, 0.85); 
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     padding: 1rem 2rem;
@@ -80,7 +78,7 @@ body {
 
 /* --- Main Content Wrapper --- */
 .main-content {
-    padding: 80px 2rem 2rem; /* 80px top padding for fixed navbar */
+    padding: 80px 2rem 2rem;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -282,21 +280,16 @@ body {
 /* --- Map Page --- */
 .map-page-container {
     display: flex;
-    /* Ubah height agar memenuhi seluruh viewport */
     height: 100vh; 
-    /* Hapus margin-top agar container dimulai dari paling atas */
     margin-top: 0;
     position: relative;
 }
 
 .sidebar {
-    /* -- PERUBAHAN UTAMA -- */
-    position: absolute; /* Ubah posisi menjadi absolut */
+    position: absolute;
     top: 0;
     left: 0;
-    height: 100%; /* Agar tingginya penuh */
-    /* -- AKHIR PERUBAHAN UTAMA -- */
-    
+    height: 100%; 
     width: 320px;
     background: rgba(22, 62, 51, 0.75);
     backdrop-filter: blur(8px);
@@ -523,7 +516,7 @@ body {
 }
 
 .table-container {
-    overflow-x: auto; /* Agar tabel bisa di-scroll di layar kecil */
+    overflow-x: auto;
 }
 
 .summary-table {
@@ -538,6 +531,8 @@ body {
     padding: 12px 15px;
     border: 1px solid var(--border-color);
     text-align: left;
+    /* BARU: Pastikan warna teks sesuai tema */
+    color: var(--text-primary); 
 }
 
 .summary-table thead tr {
@@ -546,6 +541,11 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     font-size: 0.9rem;
+}
+
+/* DIUBAH: Pastikan warna teks header juga sesuai */
+.summary-table thead th {
+    color: var(--accent-primary);
 }
 
 .summary-table tbody tr {
@@ -610,7 +610,7 @@ body {
 }
 
 .style-controls {
-    display: none; /* Defaultnya tersembunyi */
+    display: none;
     background-color: var(--bg-tertiary);
     padding: 10px;
     margin: 8px 0 8px 25px;
@@ -655,7 +655,6 @@ body {
     margin-top: 5px;
 }
 
-/* Style khusus untuk legenda yang berbeda */
 .layer-legend.line-legend {
     height: 4px;
     border-radius: 2px;
@@ -701,7 +700,6 @@ body {
 .leaflet-draw-toolbar a {
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    /* Gunakan filter: invert(1) untuk mengubah ikon dari hitam menjadi putih */
     filter: invert(1); 
 }
 
@@ -709,41 +707,38 @@ body {
     background-color: var(--bg-tertiary);
 }
 
-/* Style untuk tombol yang sedang aktif/dipilih */
 .leaflet-draw-toolbar a.leaflet-draw-toolbar-button-enabled {
     background-color: var(--accent-primary);
 }
 
-/* Style untuk tombol Save dan Cancel */
 .leaflet-draw-actions a {
     background-color: var(--accent-primary);
     color: rgb(136, 38, 38);
-    filter: none; /* Pastikan tombol Save/Cancel tidak ter-invert */
+    filter: none;
 }
 .leaflet-draw-actions a:hover {
     background-color: #d43d51;
 }
 
 .leaflet-draw.leaflet-control {
-    margin-top: 80px !important; /* Memberi margin atas dan !important untuk memaksa penerapan */
+    margin-top: 80px !important;
 }
 
 .map-controls {
-    top: 80px; /* Memberi jarak 80px dari atas, bisa disesuaikan */
+    top: 80px;
 }
 
 .leaflet-control-container .leaflet-left {
-    left: 320px; /* Lebar sidebar (320px) + 20px jarak */
+    left: 320px;
 }
 
 .info-card-link {
     text-decoration: none;
-    color: inherit; /* Mewarisi warna teks dari parent */
+    color: inherit;
 }
 
-/* --- Style untuk daftar tim di dalam modal --- */
 .team-list {
-    list-style-type: none; /* Hilangkan bullet points */
+    list-style-type: none;
     padding-left: 0;
     margin-top: 20px;
 }
@@ -759,14 +754,80 @@ body {
 
 .team-list li strong {
     color: var(--text-primary);
-    display: block; /* Agar nama dan NIM terpisah baris */
+    display: block;
     margin-bottom: 5px;
 }
+
+.video-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: #000;
+}
+
+.hero-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.video-overlay {
+    position: absolute;
+    bottom: 5%;
+    width: 100%;
+    color: white;
+    text-align: center;
+    text-shadow: 2px 2px 8px rgba(0,0,0,0.8);
+    z-index: 2;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.video-overlay h1 {
+    font-size: 2em;
+    margin: 0 0 10px 0;
+}
+
+.video-overlay p {
+    font-size: 1.2em;
+    margin: 0;
+}
+
+
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* --- BARU: Style untuk Search Input di Halaman Fasilitas --- */
+#searchInput {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    box-sizing: border-box;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#searchInput::placeholder {
+    color: var(--text-secondary);
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 10px rgba(32, 181, 129, 0.3);
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

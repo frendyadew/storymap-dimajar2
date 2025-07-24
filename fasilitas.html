@@ -57,6 +57,16 @@
                         <a href="map.html">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
+                 <div class="fasilitas-card">
+                    <div class="card-icon" style="background-color: #8e44ad;">
+                        <i class="fas fa-industry"></i>
+                    </div>
+                    <h3>Industri & Pergudangan</h3>
+                    <p>Area yang digunakan untuk kegiatan industri skala kecil hingga menengah serta penyimpanan barang.</p>
+                     <div class="card-footer">
+                        <a href="map.html">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -71,44 +81,54 @@
                         <tr>
                             <th>Nama Layer</th>
                             <th>Jumlah Fitur</th>
-                            <th>Contoh Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Fasilitas Pendidikan</td>
                             <td id="count-pendidikan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                            <td>"Pendidikan menengah pertama"</td>
                         </tr>
                         <tr>
                             <td>Perdagangan & Jasa</td>
                             <td id="count-perdaganganjasa" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                            <td>"Pasar Moderen, Pasar Tradisional"</td>
                         </tr>
                         <tr>
                             <td>Tempat Peribadatan</td>
                             <td id="count-peribadatan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                            <td>"Masjid/Mushola"</td>
+                        </tr>
+                        <tr>
+                            <td>Industri & Pergudangan</td>
+                            <td id="count-industri_pergudangan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <h3 class="table-category-header">Jaringan Jalan (Garis)</h3>
+            <h3 class="table-category-header">Jaringan dan Batas (Garis/Area)</h3>
             <div class="table-container">
                 <table class="summary-table">
                     <thead>
                         <tr>
                             <th>Nama Layer</th>
                             <th>Jumlah Fitur</th>
-                            <th>Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Jalan Lokal</td>
                             <td id="count-jalan_lokal" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                            <td>Jaringan jalan di dalam area desa.</td>
+                        </tr>
+                         <tr>
+                            <td>Sungai</td>
+                            <td id="count-sungai" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Batas RT</td>
+                            <td id="count-area_rt" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
+                        </tr>
+                        <tr>
+                            <td>Batas Administrasi</td>
+                            <td id="count-dimajar2_batas" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -121,66 +141,163 @@
                         <tr>
                             <th>Nama Layer</th>
                             <th>Jumlah Fitur</th>
-                            <th>Keterangan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Bangunan</td>
                             <td id="count-bangunan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                            <td>Poligon yang merepresentasikan setiap bangunan fisik.</td>
                         </tr>
                         <tr>
                             <td>Lahan</td>
                             <td id="count-lahan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                            <td>Poligon tutupan lahan dengan berbagai klasifikasi.</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </section>
+
+        <section class="info-section" style="margin-top: 2rem;">
+            <h2>Detail Data Bangunan</h2>
+            <p>Tabel berikut berisi informasi rinci untuk setiap bangunan yang terdata. Gunakan kolom pencarian untuk memfilter data.</p>
+            <input type="text" id="searchInput" placeholder="Cari berdasarkan nama, fungsi, RT, dll...">
+            
+            <div class="table-container">
+                <table id="bangunanTable" class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama Pemilik</th>
+                            <th>Fungsi</th>
+                            <th>Lokasi</th>
+                            <th>Pekerjaan</th>
+                            <th>Kepemilikan</th>
+                            <th>Penghuni</th>
+                            <th>Luas (m²)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bangunanTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> Memuat data bangunan...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Konfigurasi sumber data, sama seperti di map-config.js
+            // DIUBAH: Konfigurasi sumber data diperbarui dengan semua layer
             const dataSources = {
                 bangunan: 'data/bangunan.geojson',
                 lahan: 'data/lahan.geojson',
                 jalan_lokal: 'data/jalan_lokal.geojson',
                 pendidikan: 'data/pendidikan.geojson',
                 perdaganganjasa: 'data/perdaganganjasa.geojson',
-                peribadatan: 'data/peribadatan.geojson'
+                peribadatan: 'data/peribadatan.geojson',
+                industri_pergudangan: 'data/industri_pergudangan.geojson',
+                sungai: 'data/sungai.geojson',
+                area_rt: 'data/area_rt.geojson',
+                dimajar2_batas: 'data/dimajar2_batas.geojson'
             };
 
-            // Fungsi untuk mengambil data dan menghitung fitur
-            const getFeatureCount = async (url) => {
+            // Fungsi untuk mengambil data dan mengembalikan GeoJSON utuh
+            const getGeoJSON = async (url) => {
                 try {
                     const response = await fetch(url);
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    const geojsonData = await response.json();
-                    return geojsonData.features.length;
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return await response.json();
                 } catch (error) {
                     console.error(`Error loading layer from ${url}:`, error);
-                    return 'Error'; // Tampilkan 'Error' jika gagal
+                    return null;
                 }
             };
 
-            // Loop melalui setiap sumber data dan update tabel
+            // BARU: Fungsi untuk mengisi tabel detail bangunan
+            const populateBuildingTable = (geojsonData) => {
+                const tableBody = document.getElementById('bangunanTableBody');
+                if (!tableBody) return;
+                
+                tableBody.innerHTML = ''; // Kosongkan isi tabel sebelum diisi
+
+                if (!geojsonData || !geojsonData.features || geojsonData.features.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Data bangunan tidak ditemukan.</td></tr>';
+                    return;
+                }
+
+                geojsonData.features.forEach(feature => {
+                    const props = feature.properties;
+                    const row = tableBody.insertRow();
+                    
+                    // Format data untuk setiap kolom
+                    const id = props.ID || '-';
+                    const nama = props.Nama_Pemil || '-';
+                    const fungsi = props.Fungsi_Ban || '-';
+                    const lokasi = (props.RT && props.RW) ? `RT ${props.RT} / RW ${props.RW}` : '-';
+                    const pekerjaan = props.Mata_Penca || '-';
+                    const kepemilikan = props.Kepemilika || '-';
+                    const penghuni = props.Jumlah_Pen || '-';
+                    const luas = props.Shape_Area ? parseFloat(props.Shape_Area).toFixed(1) : '-';
+
+                    // Masukkan data ke sel
+                    row.insertCell(0).textContent = id;
+                    row.insertCell(1).textContent = nama;
+                    row.insertCell(2).textContent = fungsi;
+                    row.insertCell(3).textContent = lokasi;
+                    row.insertCell(4).textContent = pekerjaan;
+                    row.insertCell(5).textContent = kepemilikan;
+                    row.insertCell(6).textContent = penghuni;
+                    row.insertCell(7).textContent = luas;
+                });
+            };
+
+            // BARU: Fungsi untuk melakukan pencarian di tabel bangunan
+            const searchTable = () => {
+                const input = document.getElementById('searchInput');
+                const filter = input.value.toLowerCase();
+                const table = document.getElementById('bangunanTable');
+                const tr = table.getElementsByTagName('tr');
+
+                for (let i = 1; i < tr.length; i++) { // Mulai dari 1 untuk skip header
+                    const row = tr[i];
+                    const rowText = row.textContent || row.innerText;
+                    if (rowText.toLowerCase().indexOf(filter) > -1) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                }
+            };
+            
+            // Tambahkan event listener ke search input
+            document.getElementById('searchInput')?.addEventListener('keyup', searchTable);
+
+
+            // Loop melalui setiap sumber data, update rekapitulasi, dan panggil fungsi tabel bangunan
             for (const layerName in dataSources) {
                 const cellId = `count-${layerName}`;
                 const cell = document.getElementById(cellId);
                 
                 if (cell) {
-                    getFeatureCount(dataSources[layerName])
-                        .then(count => {
-                            cell.innerHTML = count; // Ganti ikon loading dengan jumlah fitur
+                    getGeoJSON(dataSources[layerName])
+                        .then(geojsonData => {
+                            if (geojsonData && geojsonData.features) {
+                                cell.textContent = geojsonData.features.length;
+                                
+                                // Jika layer adalah bangunan, panggil fungsi untuk mengisi tabel detail
+                                if (layerName === 'bangunan') {
+                                    populateBuildingTable(geojsonData);
+                                }
+                            } else {
+                                cell.textContent = 'Error';
+                            }
                         });
                 }
             }
         });
     </script>
 </body>
+
 </html>
