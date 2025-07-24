@@ -71,6 +71,12 @@
                 <a href="map.html" class="cta-button">Buka Peta <i class="fas fa-arrow-right"></i></a>
             </div>
         </section>
+        <section class="info-section">
+            <h2>Galeri Kegiatan Survei</h2>
+            <p>Dokumentasi kegiatan pengukuran batas dusun dan pendataan di lapangan oleh tim penyusun.</p>
+
+            <div class="gallery-collage" id="photo-gallery-container"></div>
+        </section>
     </main>
 
     <div id="teamModal" class="modal">
@@ -88,34 +94,62 @@
 
 
     <script>
-        // DIHAPUS: Blok JavaScript untuk slideshow yang menyebabkan error telah dihapus.
+        // --- BARU: Daftar Gambar untuk Galeri ---
+        // Ganti isi daftar ini dengan nama file foto Anda yang sebenarnya.
+        const galleryImages = [
+            "1.jpg",
+            "2.jpg",
+            "3.jpg",
+            "4.jpg",
+            "5.jpg",
+            "6.jpg",
+            "7.jpg",
+            "8.jpg"
+            // Tambahkan nama file lainnya di sini
+        ];
+        // --- Logika untuk membuat galeri secara dinamis ---
+        function createGallery() {
+            const container = document.getElementById('photo-gallery-container');
+            if (!container) return;
+
+            let galleryHTML = '';
+            // Loop ini sekarang hanya membuat item galeri sederhana tanpa kelas tambahan
+            galleryImages.forEach((imageName, index) => {
+                galleryHTML += `
+                <div class="gallery-item">
+                    <img src="images/${imageName}" alt="Foto Survei ${index + 1}">
+                </div>
+            `;
+            });
+
+            container.innerHTML = galleryHTML;
+        }
 
         // --- Logic untuk Modal Tim ---
         const teamModal = document.getElementById('teamModal');
         const teamCard = document.getElementById('teamInfoCard');
         const closeBtn = document.getElementById('closeTeamModal');
 
-        if (teamCard) { // Tambahkan pengecekan untuk memastikan elemen ada
-            // Tampilkan modal saat card diklik
+        if (teamCard) {
             teamCard.onclick = function () {
                 teamModal.style.display = "block";
             }
         }
-        
-        if (closeBtn) { // Tambahkan pengecekan
-            // Sembunyikan modal saat tombol close (x) diklik
+
+        if (closeBtn) {
             closeBtn.onclick = function () {
                 teamModal.style.display = "none";
             }
         }
 
-
-        // Sembunyikan modal saat area di luar modal diklik
         window.onclick = function (event) {
             if (event.target == teamModal) {
                 teamModal.style.display = "none";
             }
         }
+
+        // Jalankan fungsi untuk membuat galeri saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', createGallery);
     </script>
 </body>
 

@@ -797,7 +797,52 @@ body {
     margin: 0;
 }
 
+/* --- BARU: Style untuk Galeri Foto Masonry (Tumpukan Bata) --- */
+.gallery-collage {
+    /* Menentukan jumlah kolom untuk efek tumpukan bata */
+    column-count: 4;
+    column-gap: 15px; /* Jarak antar kolom */
+}
 
+.gallery-item {
+    margin-bottom: 15px; /* Jarak vertikal antar gambar */
+    /* Mencegah gambar terpotong dan pindah ke kolom berikutnya */
+    break-inside: avoid;
+    border-radius: 8px;
+    overflow: hidden; /* Memastikan efek hover tidak keluar dari border */
+    box-shadow: 0 4px 15px var(--shadow-color);
+    transition: box-shadow 0.3s ease;
+}
+
+.gallery-item:hover {
+    box-shadow: 0 8px 25px var(--shadow-color);
+}
+
+.gallery-item img {
+    width: 100%; /* Membuat gambar mengisi lebar kolom */
+    height: auto; /* Mempertahankan rasio aspek 4:3 asli */
+    display: block; /* Menghilangkan spasi ekstra di bawah gambar */
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.03); /* Sedikit zoom saat di-hover */
+}
+
+/* --- Media Queries agar Galeri Responsif --- */
+/* Untuk layar tablet */
+@media (max-width: 1024px) {
+    .gallery-collage {
+        column-count: 3;
+    }
+}
+
+/* Untuk layar ponsel */
+@media (max-width: 768px) {
+    .gallery-collage {
+        column-count: 2;
+    }
+}
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
