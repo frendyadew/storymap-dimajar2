@@ -28,6 +28,10 @@ class StoryMapApp {
         this.customFeatureCounter = 1;
         this.drawnLayers = {};
 
+        // BARU: Membaca parameter URL untuk menentukan layer yang akan di-zoom
+        const urlParams = new URLSearchParams(window.location.search);
+        this.layerToZoom = urlParams.get('layer');
+
         this.initializeMap();
         this.initializeControls();
         this.initializeDraw();
@@ -141,7 +145,9 @@ class StoryMapApp {
         document.querySelectorAll('.lahan-color-picker').forEach(picker => picker.addEventListener('input', (e) => this.layerManager.updateLahanCategoryColor(e.target.dataset.keterangan, e.target.value)));
         
         Object.keys(mapConfig.layerStyles).forEach(layerName => {
-            if (layerName === 'lahan') return; // Skip 'lahan' karena sudah diurus di atas
+            if (layerName === 'lahan' || ['pendidikan', 'perdaganganjasa', 'peribadatan', 'industri_pergudangan'].includes(layerName)) {
+                 // Skip 'lahan' (diurus terpisah) dan sarana (tidak ada kontrol warna lagi)
+            }
             
             const colorInput = document.getElementById(`color-${layerName}`);
             const opacityInput = document.getElementById(`opacity-${layerName}`);
@@ -150,23 +156,34 @@ class StoryMapApp {
             if (colorInput) {
                 colorInput.addEventListener('input', (e) => {
                     const newColor = e.target.value;
-                    // DIUBAH: Logika isLine diperbaiki agar lebih akurat
                     const isLine = ['jalan_lokal', 'area_rt', 'dimajar2_batas'].includes(layerName);
                     const styleProp = isLine ? 'color' : 'fillColor';
                     this.layerManager.updateLayerStyle(layerName, { [styleProp]: newColor });
 
                     if (legend) {
-                        if (layerName.includes('batas') || layerName === 'area_rt') legend.style.borderColor = newColor;
-                        else legend.style.backgroundColor = newColor;
+                        if (layerName.includes('batas') || layerName === 'area_rt') {
+                            legend.style.borderColor = newColor;
+                        } else {
+                            legend.style.backgroundColor = newColor;
+                        }
                     }
                 });
             }
+
             if (opacityInput) {
                 opacityInput.addEventListener('input', (e) => {
                     const newOpacity = parseFloat(e.target.value);
-                    const isLine = layerName === 'jalan_lokal';
-                    const styleProp = isLine ? 'opacity' : 'fillOpacity';
-                    this.layerManager.updateLayerStyle(layerName, { [styleProp]: newOpacity });
+                    const isPointLayer = ['pendidikan', 'perdaganganjasa', 'peribadatan', 'industri_pergudangan'].includes(layerName);
+                    
+                    if (isPointLayer) {
+                        // Untuk ikon, opacity tidak bisa diubah langsung, ini hanya untuk circleMarker.
+                        // Jika ingin kontrol opacity ikon, perlu logika yang lebih kompleks.
+                        // Untuk saat ini, kita biarkan saja.
+                    } else {
+                        const isLine = layerName === 'jalan_lokal';
+                        const styleProp = isLine ? 'opacity' : 'fillOpacity';
+                        this.layerManager.updateLayerStyle(layerName, { [styleProp]: newOpacity });
+                    }
                 });
             }
         });
@@ -192,6 +209,14 @@ class StoryMapApp {
 
     async loadLayers() {
         await this.layerManager.loadAllLayers();
+
+        // BARU: Logika untuk zoom ke layer spesifik atau ke extent default
+        if (this.layerToZoom) {
+            // Beri sedikit waktu agar peta selesai render sebelum zoom
+            setTimeout(() => this.layerManager.zoomToLayer(this.layerToZoom), 200);
+        } else {
+            setTimeout(() => this.layerManager.zoomToExtent(), 200);
+        }
     }
 
     showAboutModal() {

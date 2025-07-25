@@ -24,7 +24,7 @@
     <main class="main-content">
         <section class="info-section">
             <h2>Daftar Fasilitas di Desa Dimajar 2</h2>
-            <p>Berikut adalah rekapitulasi fasilitas umum yang terdata dan dapat dilihat lokasinya di peta interaktif.</p>
+            <p>Berikut adalah rekapitulasi fasilitas umum yang terdata. Klik salah satu fasilitas untuk melihat lokasinya di peta interaktif.</p>
             
             <div class="fasilitas-grid">
                  <div class="fasilitas-card">
@@ -34,7 +34,7 @@
                     <h3>Pendidikan</h3>
                     <p>Mencakup sekolah dan institusi pendidikan lainnya yang menunjang pengembangan sumber daya manusia di desa.</p>
                      <div class="card-footer">
-                        <a href="map.html">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
+                        <a href="map.html?layer=pendidikan">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
                 <div class="fasilitas-card">
@@ -44,7 +44,7 @@
                     <h3>Perdagangan & Jasa</h3>
                     <p>Terdiri dari toko, warung, dan penyedia jasa lainnya yang menjadi roda penggerak ekonomi lokal.</p>
                      <div class="card-footer">
-                        <a href="map.html">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
+                        <a href="map.html?layer=perdaganganjasa">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
                 <div class="fasilitas-card">
@@ -54,7 +54,7 @@
                     <h3>Peribadatan</h3>
                     <p>Tempat-tempat yang digunakan untuk kegiatan keagamaan dan spiritual masyarakat desa.</p>
                      <div class="card-footer">
-                        <a href="map.html">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
+                        <a href="map.html?layer=peribadatan">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
                  <div class="fasilitas-card">
@@ -64,7 +64,7 @@
                     <h3>Industri & Pergudangan</h3>
                     <p>Area yang digunakan untuk kegiatan industri skala kecil hingga menengah serta penyimpanan barang.</p>
                      <div class="card-footer">
-                        <a href="map.html">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
+                        <a href="map.html?layer=industri_pergudangan">Lihat di Peta <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -127,7 +127,7 @@
                             <td id="count-area_rt" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
                         </tr>
                         <tr>
-                            <td>Batas Administrasi</td>
+                            <td>Batas Dusun</td>
                             <td id="count-dimajar2_batas" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
                         </tr>
                     </tbody>
@@ -189,7 +189,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // DIUBAH: Konfigurasi sumber data diperbarui dengan semua layer
             const dataSources = {
                 bangunan: 'data/bangunan.geojson',
                 lahan: 'data/lahan.geojson',
@@ -203,7 +202,6 @@
                 dimajar2_batas: 'data/dimajar2_batas.geojson'
             };
 
-            // Fungsi untuk mengambil data dan mengembalikan GeoJSON utuh
             const getGeoJSON = async (url) => {
                 try {
                     const response = await fetch(url);
@@ -215,12 +213,11 @@
                 }
             };
 
-            // BARU: Fungsi untuk mengisi tabel detail bangunan
             const populateBuildingTable = (geojsonData) => {
                 const tableBody = document.getElementById('bangunanTableBody');
                 if (!tableBody) return;
                 
-                tableBody.innerHTML = ''; // Kosongkan isi tabel sebelum diisi
+                tableBody.innerHTML = ''; 
 
                 if (!geojsonData || !geojsonData.features || geojsonData.features.length === 0) {
                     tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Data bangunan tidak ditemukan.</td></tr>';
@@ -231,7 +228,6 @@
                     const props = feature.properties;
                     const row = tableBody.insertRow();
                     
-                    // Format data untuk setiap kolom
                     const id = props.ID || '-';
                     const nama = props.Nama_Pemil || '-';
                     const fungsi = props.Fungsi_Ban || '-';
@@ -241,7 +237,6 @@
                     const penghuni = props.Jumlah_Pen || '-';
                     const luas = props.Shape_Area ? parseFloat(props.Shape_Area).toFixed(1) : '-';
 
-                    // Masukkan data ke sel
                     row.insertCell(0).textContent = id;
                     row.insertCell(1).textContent = nama;
                     row.insertCell(2).textContent = fungsi;
@@ -253,14 +248,13 @@
                 });
             };
 
-            // BARU: Fungsi untuk melakukan pencarian di tabel bangunan
             const searchTable = () => {
                 const input = document.getElementById('searchInput');
                 const filter = input.value.toLowerCase();
                 const table = document.getElementById('bangunanTable');
                 const tr = table.getElementsByTagName('tr');
 
-                for (let i = 1; i < tr.length; i++) { // Mulai dari 1 untuk skip header
+                for (let i = 1; i < tr.length; i++) { 
                     const row = tr[i];
                     const rowText = row.textContent || row.innerText;
                     if (rowText.toLowerCase().indexOf(filter) > -1) {
@@ -271,11 +265,8 @@
                 }
             };
             
-            // Tambahkan event listener ke search input
             document.getElementById('searchInput')?.addEventListener('keyup', searchTable);
 
-
-            // Loop melalui setiap sumber data, update rekapitulasi, dan panggil fungsi tabel bangunan
             for (const layerName in dataSources) {
                 const cellId = `count-${layerName}`;
                 const cell = document.getElementById(cellId);
@@ -286,7 +277,6 @@
                             if (geojsonData && geojsonData.features) {
                                 cell.textContent = geojsonData.features.length;
                                 
-                                // Jika layer adalah bangunan, panggil fungsi untuk mengisi tabel detail
                                 if (layerName === 'bangunan') {
                                     populateBuildingTable(geojsonData);
                                 }

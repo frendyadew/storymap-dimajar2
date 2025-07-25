@@ -45,6 +45,13 @@ class PopupHandler {
         let content = `<div class="popup-header">${this.getLayerDisplayName(layerType)}</div>`;
         content += '<div class="popup-content">';
         
+        // BARU: Logika khusus untuk popup Batas Dusun
+        if (layerType === 'dimajar2_batas') {
+            content += `<div style="margin: 5px 0;">RW 15</div>`;
+            content += '</div>';
+            return content;
+        }
+
         // BARU: Logika khusus untuk menampilkan RT/RW gabungan di bangunan
         if (layerType === 'bangunan' && props.RT && props.RW) {
             content += `
@@ -98,7 +105,7 @@ class PopupHandler {
             sungai: 'Sungai',
             area_rt: 'Batas RT',
             lahan: 'Informasi Lahan',
-            dimajar2_batas: 'Batas Administrasi' // BARU
+            dimajar2_batas: 'Batas Dusun' // DIUBAH
         };
         
         return displayNames[layerType] || 'Informasi Fitur';

@@ -7,6 +7,34 @@ class LayerManager {
         this.bounds = null;
         this.popupLockedByClick = false;
 
+        // BARU: Definisi ikon statis untuk sarana
+        this.facilityIcons = {
+            pendidikan: L.icon({
+                iconUrl: 'legends/sekolah.png',
+                iconSize: [30, 30], // Ukuran ikon
+                iconAnchor: [12, 12], // Titik tengah ikon
+                popupAnchor: [0, -12] // Posisi popup relatif terhadap ikon
+            }),
+            perdaganganjasa: L.icon({
+                iconUrl: 'legends/pasar.png',
+                iconSize: [30, 30],
+                iconAnchor: [12, 12],
+                popupAnchor: [0, -12]
+            }),
+            peribadatan: L.icon({
+                iconUrl: 'legends/masjid.png',
+                iconSize: [30, 30],
+                iconAnchor: [12, 12],
+                popupAnchor: [0, -12]
+            }),
+            industri_pergudangan: L.icon({
+                iconUrl: 'legends/pabrik.png',
+                iconSize: [30, 30],
+                iconAnchor: [12, 12],
+                popupAnchor: [0, -12]
+            })
+        };
+
         // =======================================================
         // BARU: Pemetaan dari nama layer ke nama pane
         // =======================================================
@@ -44,14 +72,16 @@ class LayerManager {
             const geoJsonOptions = {
                 style: (feature) => this.getLayerStyle(layerName, feature),
                 onEachFeature: (feature, layer) => {
-                    if (layerName === 'dimajar2_batas') {
-                        return;
-                    }
+                    // DIHAPUS: Pengecualian untuk 'dimajar2_batas' tidak lagi diperlukan.
 
                     layer.on('mouseover', (e) => {
                         if (this.popupLockedByClick) return;
                         let hoverContent = '';
-                        if (layerName === 'jalan_lokal') {
+
+                        // BARU: Logika hover untuk Batas Dusun
+                        if (layerName === 'dimajar2_batas') {
+                            hoverContent = `<b>RW 15</b>`;
+                        } else if (layerName === 'jalan_lokal') {
                             const nama = feature.properties?.Nama || 'Jalan Tanpa Nama';
                             const ket = feature.properties?.KETERANGAN || 'Jalan Lokal';
                             hoverContent = `<b>${ket}</b><br>${nama}`;
@@ -98,12 +128,14 @@ class LayerManager {
                         layer.bindTooltip(feature.properties.Nama, { permanent: true, direction: 'center', className: 'road-label' });
                     }
                 },
+                // DIUBAH: Menggunakan ikon statis untuk sarana, bukan circleMarker
                 pointToLayer: (feature, latlng) => {
                     const isPointLayer = ['pendidikan', 'perdaganganjasa', 'peribadatan', 'industri_pergudangan'].includes(layerName);
                     if (isPointLayer) {
-                        // Tambahkan opsi 'pane' juga untuk pointToLayer
-                        const style = { ...mapConfig.layerStyles[layerName], pane: this.paneMapping[layerName] };
-                        return L.circleMarker(latlng, style);
+                        return L.marker(latlng, {
+                            icon: this.facilityIcons[layerName],
+                            pane: this.paneMapping[layerName]
+                        });
                     }
                 },
                 pane: this.paneMapping[layerName] // Menetapkan pane untuk poligon dan garis
@@ -123,6 +155,16 @@ class LayerManager {
     }
 
     getLayerStyle(layerName, feature) {
+        // BARU: Logika pewarnaan dinamis untuk Batas RT
+        if (layerName === 'area_rt') {
+            const rt = feature.properties?.RT;
+            const color = mapConfig.rtColorMap[rt] || '#cccccc'; // Warna default jika RT tidak terdefinisi
+            return {
+                ...mapConfig.layerStyles.area_rt,
+                color: color,
+                fillColor: color
+            };
+        }
         if (layerName === 'lahan') {
             const keterangan = feature.properties?.KETERANGAN;
             return {
@@ -147,7 +189,19 @@ class LayerManager {
         } else {
             this.map.removeLayer(this.layerGroups[layerName]);
         }
-        // DIHAPUS: Panggilan ke setLayerOrder dihapus karena tidak diperlukan lagi
+    }
+    
+    // BARU: Fungsi untuk zoom ke layer tertentu
+    zoomToLayer(layerName) {
+        if (this.layers[layerName]) {
+            const bounds = this.layers[layerName].getBounds();
+            if (bounds.isValid()) {
+                this.map.fitBounds(bounds, { padding: [50, 50] });
+            }
+        } else {
+            console.warn(`Layer "${layerName}" not found for zooming.`);
+            this.zoomToExtent(); // Fallback ke zoom semua layer
+        }
     }
 
     zoomToExtent() {
@@ -169,10 +223,8 @@ class LayerManager {
                     this.layerGroups[layerName].addTo(this.map);
                 }
             }
-            // DIHAPUS: Panggilan ke setLayerOrder dihapus
+            // DIHAPUS: Panggilan zoom otomatis, akan dikontrol oleh main.js
             
-            setTimeout(() => this.zoomToExtent(), 500);
-
         } catch (error) {
             console.error('Error loading layers:', error);
             this.showError('Gagal memuat beberapa layer');
@@ -181,9 +233,6 @@ class LayerManager {
         }
     }
     
-    // DIHAPUS: Fungsi setLayerOrder dihapus seluruhnya karena sudah digantikan oleh sistem Panes
-    // setLayerOrder() { ... }
-
     showError(message) {
         alert(message);
     }
@@ -213,6 +262,12 @@ class LayerManager {
         Object.assign(mapConfig.layerStyles[layerName], finalStyle);
         if (layer.setStyle) {
             layer.setStyle(finalStyle);
+        } else if(layer.eachLayer) { // Untuk L.featureGroup atau L.layerGroup
+            layer.eachLayer(subLayer => {
+                if (subLayer.setStyle) {
+                    subLayer.setStyle(finalStyle);
+                }
+            });
         }
     }
 

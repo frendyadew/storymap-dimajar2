@@ -170,6 +170,11 @@ body {
     border-radius: 10px;
     border: 1px solid var(--border-color);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
 }
 
 .info-card:hover {
@@ -207,9 +212,11 @@ body {
 }
 
 /* --- Fasilitas Page --- */
+/* DIUBAH: Menggunakan flexbox untuk meratakan dan menengahkan kartu */
 .fasilitas-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap; /* Agar responsif di layar kecil */
     gap: 2rem;
     margin-top: 2rem;
 }
@@ -224,6 +231,8 @@ body {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex-basis: 300px; /* Lebar dasar kartu */
+    flex-grow: 0; /* Mencegah kartu membesar */
 }
 
 .fasilitas-card:hover {
@@ -531,7 +540,6 @@ body {
     padding: 12px 15px;
     border: 1px solid var(--border-color);
     text-align: left;
-    /* BARU: Pastikan warna teks sesuai tema */
     color: var(--text-primary); 
 }
 
@@ -543,7 +551,6 @@ body {
     font-size: 0.9rem;
 }
 
-/* DIUBAH: Pastikan warna teks header juga sesuai */
 .summary-table thead th {
     color: var(--accent-primary);
 }
@@ -797,19 +804,25 @@ body {
     margin: 0;
 }
 
+/* BARU: Style untuk pemisah antar bagian di dalam info-section */
+.internal-section-header {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
 /* --- BARU: Style untuk Galeri Foto Masonry (Tumpukan Bata) --- */
 .gallery-collage {
-    /* Menentukan jumlah kolom untuk efek tumpukan bata */
     column-count: 4;
-    column-gap: 15px; /* Jarak antar kolom */
+    column-gap: 15px;
+    margin-top: 1.5rem;
 }
 
 .gallery-item {
-    margin-bottom: 15px; /* Jarak vertikal antar gambar */
-    /* Mencegah gambar terpotong dan pindah ke kolom berikutnya */
+    margin-bottom: 15px;
     break-inside: avoid;
     border-radius: 8px;
-    overflow: hidden; /* Memastikan efek hover tidak keluar dari border */
+    overflow: hidden;
     box-shadow: 0 4px 15px var(--shadow-color);
     transition: box-shadow 0.3s ease;
 }
@@ -819,25 +832,23 @@ body {
 }
 
 .gallery-item img {
-    width: 100%; /* Membuat gambar mengisi lebar kolom */
-    height: auto; /* Mempertahankan rasio aspek 4:3 asli */
-    display: block; /* Menghilangkan spasi ekstra di bawah gambar */
+    width: 100%;
+    height: auto;
+    display: block;
     transition: transform 0.3s ease;
 }
 
 .gallery-item:hover img {
-    transform: scale(1.03); /* Sedikit zoom saat di-hover */
+    transform: scale(1.03);
 }
 
 /* --- Media Queries agar Galeri Responsif --- */
-/* Untuk layar tablet */
 @media (max-width: 1024px) {
     .gallery-collage {
         column-count: 3;
     }
 }
 
-/* Untuk layar ponsel */
 @media (max-width: 768px) {
     .gallery-collage {
         column-count: 2;

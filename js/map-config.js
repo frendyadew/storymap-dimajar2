@@ -28,6 +28,12 @@ const mapConfig = {
         }
     },
 
+    // BARU: Menambahkan pemetaan warna untuk RT
+    rtColorMap: {
+        '1': '#ff17ab', // Warna untuk RT 1
+        '2': '#17a1ff'  // Warna untuk RT 2
+    },
+
     lahanColorMap: {
         'Vegetasi Non Budidaya Lainnya': '#aed581',
         'Tempat Tinggal': '#ef9a9a',
@@ -60,9 +66,9 @@ const mapConfig = {
             weight: 4,
             opacity: 0.8
         },
+        // DIUBAH: Menghapus fillColor karena akan menggunakan ikon statis
         pendidikan: {
             radius: 8,
-            fillColor: '#45b7d1',
             color: '#1e88e5',
             weight: 2,
             opacity: 1,
@@ -70,7 +76,6 @@ const mapConfig = {
         },
         perdaganganjasa: {
             radius: 8,
-            fillColor: '#96ceb4',
             color: '#26a69a',
             weight: 2,
             opacity: 1,
@@ -78,7 +83,6 @@ const mapConfig = {
         },
         peribadatan: {
             radius: 8,
-            fillColor: '#feca57',
             color: '#ff9f43',
             weight: 2,
             opacity: 1,
@@ -86,7 +90,6 @@ const mapConfig = {
         },
         industri_pergudangan: {
              radius: 8,
-             fillColor: '#8e44ad',
              color: '#6a1b9a',
              weight: 2,
              opacity: 1,
@@ -100,10 +103,10 @@ const mapConfig = {
             fillOpacity: 0.7
         },
         area_rt: {
-            color: '#ff17ab',
+            color: '#ff17ab', // Warna default
             weight: 2.5,
             fill: true,
-            fillColor: '#ff17ab',
+            fillColor: '#ff17ab', // Warna default
             fillOpacity: 0.35,
             dashArray: '5, 5'
         },
