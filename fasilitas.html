@@ -18,6 +18,7 @@
             <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
             <a href="map.html" class="nav-link"><i class="fas fa-map"></i> Peta Interaktif</a>
             <a href="fasilitas.html" class="nav-link active"><i class="fas fa-building"></i> Fasilitas</a>
+            <a href="#" class="nav-link" id="teamNavlink"><i class="fas fa-users"></i> Tim Penyusun</a>
         </div>
     </nav>
 
@@ -78,28 +79,13 @@
             <div class="table-container">
                 <table class="summary-table">
                     <thead>
-                        <tr>
-                            <th>Nama Layer</th>
-                            <th>Jumlah Fitur</th>
-                        </tr>
+                        <tr><th>Nama Layer</th><th>Jumlah Fitur</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Fasilitas Pendidikan</td>
-                            <td id="count-pendidikan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Perdagangan & Jasa</td>
-                            <td id="count-perdaganganjasa" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Tempat Peribadatan</td>
-                            <td id="count-peribadatan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Industri & Pergudangan</td>
-                            <td id="count-industri_pergudangan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
+                        <tr><td>Fasilitas Pendidikan</td><td id="count-pendidikan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                        <tr><td>Perdagangan & Jasa</td><td id="count-perdaganganjasa" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                        <tr><td>Tempat Peribadatan</td><td id="count-peribadatan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                        <tr><td>Industri & Pergudangan</td><td id="count-industri_pergudangan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -108,28 +94,13 @@
             <div class="table-container">
                 <table class="summary-table">
                     <thead>
-                        <tr>
-                            <th>Nama Layer</th>
-                            <th>Jumlah Fitur</th>
-                        </tr>
+                        <tr><th>Nama Layer</th><th>Jumlah Fitur</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Jalan Lokal</td>
-                            <td id="count-jalan_lokal" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
-                         <tr>
-                            <td>Sungai</td>
-                            <td id="count-sungai" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Batas RT</td>
-                            <td id="count-area_rt" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Batas Dusun</td>
-                            <td id="count-dimajar2_batas" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
+                        <tr><td>Jalan Lokal</td><td id="count-jalan_lokal" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                         <tr><td>Sungai</td><td id="count-sungai" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                        <tr><td>Batas RT</td><td id="count-area_rt" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                        <tr><td>Batas Dusun</td><td id="count-dimajar2_batas" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -138,20 +109,11 @@
             <div class="table-container">
                 <table class="summary-table">
                     <thead>
-                        <tr>
-                            <th>Nama Layer</th>
-                            <th>Jumlah Fitur</th>
-                        </tr>
+                        <tr><th>Nama Layer</th><th>Jumlah Fitur</th></tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Bangunan</td>
-                            <td id="count-bangunan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
-                        <tr>
-                            <td>Lahan</td>
-                            <td id="count-lahan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td>
-                        </tr>
+                        <tr><td>Bangunan</td><td id="count-bangunan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                        <tr><td>Lahan</td><td id="count-lahan" class="count-cell"><i class="fas fa-spinner fa-spin"></i></td></tr>
                     </tbody>
                 </table>
             </div>
@@ -166,40 +128,40 @@
                 <table id="bangunanTable" class="summary-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nama Pemilik</th>
-                            <th>Fungsi</th>
-                            <th>Lokasi</th>
-                            <th>Pekerjaan</th>
-                            <th>Kepemilikan</th>
-                            <th>Penghuni</th>
-                            <th>Luas (m²)</th>
+                            <th>ID</th><th>Nama Pemilik</th><th>Fungsi</th><th>Lokasi</th><th>Pekerjaan</th><th>Kepemilikan</th><th>Penghuni</th><th>Luas (m²)</th>
                         </tr>
                     </thead>
                     <tbody id="bangunanTableBody">
-                        <tr>
-                            <td colspan="8" style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> Memuat data bangunan...</td>
-                        </tr>
+                        <tr><td colspan="8" style="text-align: center;"><i class="fas fa-spinner fa-spin"></i> Memuat data bangunan...</td></tr>
                     </tbody>
                 </table>
             </div>
         </section>
 
     </main>
+    
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTeamModal">&times;</span>
+            <h2><i class="fas fa-users"></i> Tim Penyusun</h2>
+            <ul class="team-list">
+                <li><strong>Aca Cintiya Bela</strong> - 23/515886/SV/22634</li>
+                <li><strong>Alifah Khairur Rizky</strong> - 23/515178/SV/22490</li>
+                <li><strong>Arum Pradana</strong> - 23/514595/SV/22387</li>
+                <li><strong>Frendy Ade Wicaksono</strong> - 23/523180/SV/23868</li>
+            </ul>
+        </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Script untuk rekapitulasi data ---
             const dataSources = {
-                bangunan: 'data/bangunan.geojson',
-                lahan: 'data/lahan.geojson',
-                jalan_lokal: 'data/jalan_lokal.geojson',
-                pendidikan: 'data/pendidikan.geojson',
-                perdaganganjasa: 'data/perdaganganjasa.geojson',
-                peribadatan: 'data/peribadatan.geojson',
-                industri_pergudangan: 'data/industri_pergudangan.geojson',
-                sungai: 'data/sungai.geojson',
-                area_rt: 'data/area_rt.geojson',
-                dimajar2_batas: 'data/dimajar2_batas.geojson'
+                bangunan: 'data/bangunan.geojson', lahan: 'data/lahan.geojson',
+                jalan_lokal: 'data/jalan_lokal.geojson', pendidikan: 'data/pendidikan.geojson',
+                perdaganganjasa: 'data/perdaganganjasa.geojson', peribadatan: 'data/peribadatan.geojson',
+                industri_pergudangan: 'data/industri_pergudangan.geojson', sungai: 'data/sungai.geojson',
+                area_rt: 'data/area_rt.geojson', dimajar2_batas: 'data/dimajar2_batas.geojson'
             };
 
             const getGeoJSON = async (url) => {
@@ -208,43 +170,29 @@
                     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
                     return await response.json();
                 } catch (error) {
-                    console.error(`Error loading layer from ${url}:`, error);
-                    return null;
+                    console.error(`Error loading layer from ${url}:`, error); return null;
                 }
             };
 
             const populateBuildingTable = (geojsonData) => {
                 const tableBody = document.getElementById('bangunanTableBody');
                 if (!tableBody) return;
-                
-                tableBody.innerHTML = ''; 
-
+                tableBody.innerHTML = '';
                 if (!geojsonData || !geojsonData.features || geojsonData.features.length === 0) {
                     tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center;">Data bangunan tidak ditemukan.</td></tr>';
                     return;
                 }
-
                 geojsonData.features.forEach(feature => {
                     const props = feature.properties;
                     const row = tableBody.insertRow();
-                    
-                    const id = props.ID || '-';
-                    const nama = props.Nama_Pemil || '-';
-                    const fungsi = props.Fungsi_Ban || '-';
-                    const lokasi = (props.RT && props.RW) ? `RT ${props.RT} / RW ${props.RW}` : '-';
-                    const pekerjaan = props.Mata_Penca || '-';
-                    const kepemilikan = props.Kepemilika || '-';
-                    const penghuni = props.Jumlah_Pen || '-';
-                    const luas = props.Shape_Area ? parseFloat(props.Shape_Area).toFixed(1) : '-';
-
-                    row.insertCell(0).textContent = id;
-                    row.insertCell(1).textContent = nama;
-                    row.insertCell(2).textContent = fungsi;
-                    row.insertCell(3).textContent = lokasi;
-                    row.insertCell(4).textContent = pekerjaan;
-                    row.insertCell(5).textContent = kepemilikan;
-                    row.insertCell(6).textContent = penghuni;
-                    row.insertCell(7).textContent = luas;
+                    row.insertCell(0).textContent = props.ID || '-';
+                    row.insertCell(1).textContent = props.Nama_Pemil || '-';
+                    row.insertCell(2).textContent = props.Fungsi_Ban || '-';
+                    row.insertCell(3).textContent = (props.RT && props.RW) ? `RT ${props.RT} / RW ${props.RW}` : '-';
+                    row.insertCell(4).textContent = props.Mata_Penca || '-';
+                    row.insertCell(5).textContent = props.Kepemilika || '-';
+                    row.insertCell(6).textContent = props.Jumlah_Pen || '-';
+                    row.insertCell(7).textContent = props.Shape_Area ? parseFloat(props.Shape_Area).toFixed(1) : '-';
                 });
             };
 
@@ -253,37 +201,44 @@
                 const filter = input.value.toLowerCase();
                 const table = document.getElementById('bangunanTable');
                 const tr = table.getElementsByTagName('tr');
-
-                for (let i = 1; i < tr.length; i++) { 
-                    const row = tr[i];
-                    const rowText = row.textContent || row.innerText;
-                    if (rowText.toLowerCase().indexOf(filter) > -1) {
-                        row.style.display = "";
-                    } else {
-                        row.style.display = "none";
-                    }
+                for (let i = 1; i < tr.length; i++) {
+                    const rowText = tr[i].textContent || tr[i].innerText;
+                    tr[i].style.display = rowText.toLowerCase().indexOf(filter) > -1 ? "" : "none";
                 }
             };
-            
             document.getElementById('searchInput')?.addEventListener('keyup', searchTable);
 
             for (const layerName in dataSources) {
-                const cellId = `count-${layerName}`;
-                const cell = document.getElementById(cellId);
-                
+                const cell = document.getElementById(`count-${layerName}`);
                 if (cell) {
-                    getGeoJSON(dataSources[layerName])
-                        .then(geojsonData => {
-                            if (geojsonData && geojsonData.features) {
-                                cell.textContent = geojsonData.features.length;
-                                
-                                if (layerName === 'bangunan') {
-                                    populateBuildingTable(geojsonData);
-                                }
-                            } else {
-                                cell.textContent = 'Error';
-                            }
-                        });
+                    getGeoJSON(dataSources[layerName]).then(data => {
+                        if (data && data.features) {
+                            cell.textContent = data.features.length;
+                            if (layerName === 'bangunan') populateBuildingTable(data);
+                        } else { cell.textContent = 'Error'; }
+                    });
+                }
+            }
+
+            // --- BARU: Logika untuk Modal "Tim Penyusun" ---
+            const teamModal = document.getElementById('teamModal');
+            const teamNavlink = document.getElementById('teamNavlink');
+            const closeTeamBtn = document.getElementById('closeTeamModal');
+
+            if (teamNavlink) {
+                teamNavlink.onclick = function (e) {
+                    e.preventDefault();
+                    teamModal.style.display = "block";
+                }
+            }
+            if (closeTeamBtn) {
+                closeTeamBtn.onclick = function () {
+                    teamModal.style.display = "none";
+                }
+            }
+            window.onclick = function (event) {
+                if (event.target == teamModal) {
+                    teamModal.style.display = "none";
                 }
             }
         });

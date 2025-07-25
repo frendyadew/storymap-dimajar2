@@ -1,9 +1,9 @@
 // Map Configuration "map-config.js"
 const mapConfig = {
     // Default map center (adjust according to your area)
-    center: [-7.569, 110.179], 
+    center: [-7.569, 110.179],
     zoom: 16,
-    
+
     // Basemap definitions
     basemaps: {
         osm: {
@@ -28,30 +28,29 @@ const mapConfig = {
         }
     },
 
-    // BARU: Menambahkan pemetaan warna untuk RT
+    // DIUBAH: Menambahkan warna berbeda untuk RT 1 dan RT 2
     rtColorMap: {
-        '1': '#ff17ab', // Warna untuk RT 1
-        '2': '#17a1ff'  // Warna untuk RT 2
+        '1': '#e53935', // Warna Merah untuk RT 1
+        '2': '#1e88e5'  // Warna Biru untuk RT 2
     },
 
     lahanColorMap: {
-        'Vegetasi Non Budidaya Lainnya': '#aed581',
-        'Tempat Tinggal': '#ef9a9a',
-        'Lahan Terbuka (Tanah Kosong)': '#bcaaa4',
-        'Transportasi': '#b0bec5',
-        'Perikanan air tawar': '#90caf9',
-        'Pekarangan': '#dce775',
-        'Sawah': '#81c784',
-        'Peribadatan': '#fff59d',
-        'Perkebunan': '#c5e1a5',
-        'Pendidikan': '#ffcc80',
-        'Sungai': '#aadef0',
-        'Industri dan Perdagangan': '#c7b2de',
-        'Kebun Campur': '#a2b975',
-        'Pos Ronda': '#f5deb3',
-        'Rumput': '#c0d581'
+        'Vegetasi Non Budidaya Lainnya': '#388e3c',      // Hijau tua
+        'Tempat Tinggal': '#e53935',                     // Merah terang
+        'Lahan Terbuka (Tanah Kosong)': '#8d6e63',       // Coklat tanah
+        'Transportasi': '#1976d2',                       // Biru transportasi
+        'Perikanan air tawar': '#0288d1',                // Biru air
+        'Pekarangan': '#cddc39',                         // Hijau kekuningan
+        'Sawah': '#43a047',                              // Hijau sawah
+        'Peribadatan': '#fbc02d',                        // Kuning emas
+        'Perkebunan': '#689f38',                         // Hijau kebun
+        'Pendidikan': '#ff9800',                         // Oranye pendidikan
+        'Sungai': '#00bcd4',                             // Biru sungai
+        'Industri dan Perdagangan': '#6d4c41',           // Coklat industri
+        'Kebun Campur': '#7cb342',                       // Hijau campur
+        'Pos Ronda': '#f5e0b3',                          // Krem pos ronda
+        'Rumput': '#c0ca33'                              // Hijau rumput
     },
-    
     // Layer styles
     layerStyles: {
         bangunan: {
@@ -89,11 +88,11 @@ const mapConfig = {
             fillOpacity: 0.8
         },
         industri_pergudangan: {
-             radius: 8,
-             color: '#6a1b9a',
-             weight: 2,
-             opacity: 1,
-             fillOpacity: 0.8
+            radius: 8,
+            color: '#6a1b9a',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.8
         },
         sungai: {
             fillColor: '#3498db',
@@ -123,7 +122,7 @@ const mapConfig = {
             fillOpacity: 1
         }
     },
-    
+
     // Layer data sources
     dataSources: {
         bangunan: 'data/bangunan.geojson',

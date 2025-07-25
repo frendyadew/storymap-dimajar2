@@ -19,7 +19,6 @@
             font-weight: bold;
             text-shadow: 0 0 2px #ffffff, 0 0 2px #ffffff, 0 0 2px #ffffff;
         }
-        /* BARU: Style untuk ikon legenda agar ukurannya pas */
         .layer-legend-icon {
             width: 20px;
             height: 20px;
@@ -38,6 +37,7 @@
             <a href="index.html" class="nav-link"><i class="fas fa-home"></i> Home</a>
             <a href="map.html" class="nav-link active"><i class="fas fa-map"></i> Peta Interaktif</a>
             <a href="fasilitas.html" class="nav-link"><i class="fas fa-building"></i> Fasilitas</a>
+            <a href="#" class="nav-link" id="teamNavlink"><i class="fas fa-users"></i> Tim Penyusun</a>
         </div>
     </nav>
 
@@ -57,142 +57,75 @@
             <div class="control-group">
                 <h3><i class="fas fa-list"></i> Layer List</h3>
                 <div class="layer-controls">
-                    <div id="custom-layers-container">
-                    </div>
-
+                    <div id="custom-layers-container"></div>
                     <div class="control-group-inner">
                         <h4><i class="fas fa-road"></i> Jaringan Jalan</h4>
                         <div class="layer-item">
                             <input type="checkbox" id="jalan_lokal" checked>
                             <label for="jalan_lokal">Jalan Lokal</label>
-                            <div class="layer-legend line-legend" id="legend-jalan_lokal"
-                                style="background-color: #4ecdc4;"></div>
-                            <button class="style-toggle-btn" data-target="style-controls-jalan_lokal"><i
-                                    class="fas fa-palette"></i></button>
+                            <div class="layer-legend line-legend" id="legend-jalan_lokal" style="background-color: #4ecdc4;"></div>
+                            <button class="style-toggle-btn" data-target="style-controls-jalan_lokal"><i class="fas fa-palette"></i></button>
                         </div>
                         <div class="style-controls" id="style-controls-jalan_lokal">
-                            <div class="control-row"><label>Warna</label><input type="color" id="color-jalan_lokal"
-                                    value="#4ecdc4"></div>
-                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-jalan_lokal"
-                                    min="0" max="1" step="0.1" value="0.8"></div>
+                            <div class="control-row"><label>Warna</label><input type="color" id="color-jalan_lokal" value="#4ecdc4"></div>
+                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-jalan_lokal" min="0" max="1" step="0.1" value="0.8"></div>
                         </div>
                     </div>
-
                     <div class="control-group-inner">
                         <h4><i class="fas fa-school"></i> Sarana dan Prasarana</h4>
                         <div class="layer-item">
                             <input type="checkbox" id="pendidikan" checked>
                             <label for="pendidikan">Pendidikan</label>
                             <img src="legends/sekolah.png" class="layer-legend-icon" alt="Legenda Pendidikan">
-                            <button class="style-toggle-btn" data-target="style-controls-pendidikan"><i
-                                    class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-pendidikan">
-                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-pendidikan"
-                                    min="0" max="1" step="0.1" value="1.0" disabled></div>
-                                    <span class="style-note">Opacity ikon tidak dapat diubah.</span>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="perdaganganjasa" checked>
                             <label for="perdaganganjasa">Perdagangan & Jasa</label>
                             <img src="legends/pasar.png" class="layer-legend-icon" alt="Legenda Perdagangan">
-                            <button class="style-toggle-btn" data-target="style-controls-perdaganganjasa"><i
-                                    class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-perdaganganjasa">
-                             <div class="control-row"><label>Opacity</label><input type="range"
-                                    id="opacity-perdaganganjasa" min="0" max="1" step="0.1" value="1.0" disabled></div>
-                                    <span class="style-note">Opacity ikon tidak dapat diubah.</span>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="peribadatan" checked>
                             <label for="peribadatan">Peribadatan</label>
                             <img src="legends/masjid.png" class="layer-legend-icon" alt="Legenda Peribadatan">
-                            <button class="style-toggle-btn" data-target="style-controls-peribadatan"><i
-                                    class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-peribadatan">
-                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-peribadatan"
-                                    min="0" max="1" step="0.1" value="1.0" disabled></div>
-                                    <span class="style-note">Opacity ikon tidak dapat diubah.</span>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="industri_pergudangan" checked>
                             <label for="industri_pergudangan">Industri & Pergudangan</label>
                             <img src="legends/pabrik.png" class="layer-legend-icon" alt="Legenda Industri">
-                            <button class="style-toggle-btn" data-target="style-controls-industri_pergudangan"><i
-                                    class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-industri_pergudangan">
-                            <div class="control-row"><label>Opacity</label><input type="range"
-                                    id="opacity-industri_pergudangan" min="0" max="1" step="0.1" value="1.0" disabled></div>
-                                    <span class="style-note">Opacity ikon tidak dapat diubah.</span>
                         </div>
                     </div>
-
                     <div class="control-group-inner">
                         <h4><i class="fas fa-tree"></i> Penggunaan Lahan</h4>
                         <div class="layer-item">
                             <input type="checkbox" id="sungai" checked>
                             <label for="sungai">Sungai</label>
                             <div class="layer-legend" id="legend-sungai" style="background-color: #3498db;"></div>
-                            <button class="style-toggle-btn" data-target="style-controls-sungai"><i
-                                    class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-sungai">
-                            <div class="control-row"><label>Warna</label><input type="color" id="color-sungai"
-                                    value="#3498db"></div>
-                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-sungai"
-                                    min="0" max="1" step="0.1" value="0.7"></div>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="bangunan" checked>
                             <label for="bangunan">Bangunan</label>
                             <div class="layer-legend" id="legend-bangunan" style="background-color: #ff6b6b;"></div>
-                            <button class="style-toggle-btn" data-target="style-controls-bangunan"><i
-                                    class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-bangunan">
-                            <div class="control-row"><label>Warna</label><input type="color" id="color-bangunan"
-                                    value="#ff6b6b"></div>
-                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-bangunan"
-                                    min="0" max="1" step="0.1" value="1"></div>
                         </div>
                         <div class="layer-item">
                             <input type="checkbox" id="lahan" checked>
                             <label for="lahan">Lahan</label>
                             <div class="layer-legend" id="legend-lahan" style="background-color: #888;"></div>
-                            <button class="style-toggle-btn" data-target="style-controls-lahan"><i
-                                    class="fas fa-palette"></i></button>
+                            <button class="style-toggle-btn" data-target="style-controls-lahan"><i class="fas fa-palette"></i></button>
                         </div>
                         <div class="style-controls" id="style-controls-lahan">
                         </div>
                     </div>
-
                     <div class="control-group-inner">
                         <h4><i class="fas fa-draw-polygon"></i> Area Kajian</h4>
                          <div class="layer-item">
                             <input type="checkbox" id="area_rt">
                             <label for="area_rt">Batas RT</label>
                             <div class="layer-legend line-legend" id="legend-area_rt" style="background-color: #ff17ab;"></div>
-                            <button class="style-toggle-btn" data-target="style-controls-area_rt"><i class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-area_rt">
-                            <span class="style-note">Warna RT 1 & RT 2 dibedakan secara otomatis.</span>
-                            <div class="control-row"><label>Opacity</label><input type="range" id="opacity-area_rt" min="0" max="1" step="0.1" value="0.35"></div>
                         </div>
                         <div class="layer-item">
-                            <input type="checkbox" id="dimajar2_batas">
+                            <input type="checkbox" id="dimajar2_batas" checked>
                              <label for="dimajar2_batas">Batas Dusun</label>
                             <div class="layer-legend line-legend" id="legend-dimajar2_batas" style="border: 2px solid #f7b731;"></div>
-                            <button class="style-toggle-btn" data-target="style-controls-dimajar2_batas"><i class="fas fa-palette"></i></button>
-                        </div>
-                        <div class="style-controls" id="style-controls-dimajar2_batas">
-                            <div class="control-row"><label>Warna Garis</label><input type="color" id="color-dimajar2_batas" value="#f7b731"></div>
-                            <div class="control-row">
-                                <label for="batasFillToggle">Tampilkan Isian</label>
-                                <input type="checkbox" id="batasFillToggle">
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -218,13 +151,26 @@
 
     <div id="aboutModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
+            <span class="close" id="closeAboutModal">&times;</span>
             <h2><i class="fas fa-info-circle"></i> Tentang Peta Ini</h2>
             <p><strong>Judul:</strong> Peta Desa di Dimajar 2, Sumberarum</p>
             <p><strong>Deskripsi:</strong> Web map interaktif yang menampilkan informasi spasial desa meliputi sebaran
                 bangunan, jaringan jalan lokal, serta fasilitas pendidikan, perdagangan & jasa, dan tempat peribadatan.
             </p>
             <p><strong>Sumber Data:</strong> Data spasial hasil digitasi dan survey lapangan.</p>
+        </div>
+    </div>
+    
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTeamModal">&times;</span>
+            <h2><i class="fas fa-users"></i> Tim Penyusun</h2>
+            <ul class="team-list">
+                <li><strong>Aca Cintiya Bela</strong> - 23/515886/SV/22634</li>
+                <li><strong>Alifah Khairur Rizky</strong> - 23/515178/SV/22490</li>
+                <li><strong>Arum Pradana</strong> - 23/514595/SV/22387</li>
+                <li><strong>Frendy Ade Wicaksono</strong> - 23/523180/SV/23868</li>
+            </ul>
         </div>
     </div>
 
@@ -235,20 +181,35 @@
     <script src="js/layer-manager.js"></script>
     <script src="js/main.js"></script>
     <script>
-        const aboutBtn = document.getElementById('aboutBtn');
+        // --- Logika untuk Modal "About" ---
         const aboutModal = document.getElementById('aboutModal');
-        const closeBtn = aboutModal.querySelector('.close');
+        const aboutBtn = document.getElementById('aboutBtn');
+        const closeAboutBtn = document.getElementById('closeAboutModal');
+        
+        aboutBtn.addEventListener('click', () => aboutModal.style.display = 'block');
+        closeAboutBtn.addEventListener('click', () => aboutModal.style.display = 'none');
 
-        aboutBtn.addEventListener('click', () => {
-            aboutModal.style.display = 'block';
-        });
-        closeBtn.addEventListener('click', () => {
-            aboutModal.style.display = 'none';
-        });
-        window.addEventListener('click', (e) => {
-            if (e.target === aboutModal) {
-                aboutModal.style.display = 'none';
+        // --- BARU: Logika untuk Modal "Tim Penyusun" ---
+        const teamModal = document.getElementById('teamModal');
+        const teamNavlink = document.getElementById('teamNavlink');
+        const closeTeamBtn = document.getElementById('closeTeamModal');
+
+        if (teamNavlink) {
+            teamNavlink.onclick = function (e) {
+                e.preventDefault();
+                teamModal.style.display = "block";
             }
+        }
+        if (closeTeamBtn) {
+            closeTeamBtn.onclick = function () {
+                teamModal.style.display = "none";
+            }
+        }
+
+        // --- Logika untuk menutup modal jika klik di luar area modal ---
+        window.addEventListener('click', (e) => {
+            if (e.target === aboutModal) aboutModal.style.display = 'none';
+            if (e.target === teamModal) teamModal.style.display = 'none';
         });
     </script>
 </body>

@@ -18,6 +18,7 @@
             <a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Home</a>
             <a href="map.html" class="nav-link"><i class="fas fa-map"></i> Peta Interaktif</a>
             <a href="fasilitas.html" class="nav-link"><i class="fas fa-building"></i> Fasilitas</a>
+            <a href="#" class="nav-link" id="teamNavlink"><i class="fas fa-users"></i> Tim Penyusun</a>
         </div>
     </nav>
 
@@ -29,7 +30,7 @@
             </video>
             <div class="video-overlay">
                 <h1>Selamat Datang di Peta Digital Desa Dimajar 2, Sumberarum</h1>
-                <p>Jelajahi dusun dari sudut pandang baru melalui visualisasi geospasial sccara digital yang interaktif.</p>
+                <p>Jelajahi dusun dari sudut pandang baru melalui visualisasi geospasial secara digital yang interaktif.</p>
             </div>
         </div>
 
@@ -39,15 +40,6 @@
                 WebGIS ini merupakan hasil dari kegiatan Praktik Kerja Lapangan: Akuisisi Data dan Pemetaan yang memetakan wilayah Dusun Dimajar 2 secara menyeluruh. Platform ini dikembangkan sebagai sarana interaktif untuk menyajikan informasi geospasial penting terkait kondisi desa. Melalui WebGIS ini, pengguna dapat dengan mudah mengakses data spasial mengenai infrastruktur, fasilitas umum, serta penggunaan lahan, sehingga dapat dimanfaatkan oleh masyarakat, pemerintah desa, maupun pihak lain yang membutuhkan data untuk perencanaan dan pengambilan keputusan.
             </p>
             <div class="info-grid">
-                <a href="map.html" class="info-card-link">
-                    <div class="info-card">
-                        <i class="fas fa-map-marked-alt"></i>
-                        <h3>Jelajahi Peta</h3>
-                        <p>Buka peta interaktif untuk melihat data spasial lengkap, termasuk penggunaan lahan, sebaran
-                            fasilitas, dan jaringan jalan di Dimajar 2.</p>
-                    </div>
-                </a>
-
                 <a href="fasilitas.html" class="info-card-link">
                     <div class="info-card">
                         <i class="fas fa-building"></i>
@@ -56,19 +48,22 @@
                             area kajian.</p>
                     </div>
                 </a>
-
-                <div class="info-card" id="teamInfoCard" style="cursor: pointer;">
-                    <i class="fas fa-users"></i>
-                    <h3>Tim Penyusun</h3>
-                    <p>Proyek ini disusun oleh tim mahasiswa sebagai bagian dari program Praktik Kerja Lapangan. Klik
-                        untuk melihat anggota tim.</p>
-                </div>
+                <a href="map.html" class="info-card-link">
+                    <div class="info-card">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <h3>Jelajahi Peta</h3>
+                        <p>Buka peta interaktif untuk melihat data spasial lengkap, termasuk penggunaan lahan, sebaran
+                            fasilitas, dan jaringan jalan di Dimajar 2.</p>
+                    </div>
+                </a>
+                <a href="https://www.canva.com/design/DAGuL2UA1wE/CBl7wRAtq0PpkP05wBnG9Q/view?utm_content=DAGuL2UA1wE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h7cae94c447" target="_blank" class="info-card-link">
+                    <div class="info-card">
+                        <i class="fas fa-images"></i>
+                        <h3>Album Peta</h3>
+                        <p>Lihat koleksi peta-peta hasil olahan data dalam format poster yang informatif dan menarik secara visual.</p>
+                    </div>
+                </a>
             </div>
-            <div class="call-to-action">
-                <p>Siap untuk menjelajah? Buka peta interaktif sekarang juga!</p>
-                <a href="map.html" class="cta-button">Buka Peta <i class="fas fa-arrow-right"></i></a>
-            </div>
-
             <h2 class="internal-section-header">Galeri Kegiatan Survei</h2>
             <p>Dokumentasi kegiatan pengukuran batas dusun dan pendataan di lapangan oleh tim penyusun.</p>
             <div class="gallery-collage" id="photo-gallery-container"></div>
@@ -91,26 +86,15 @@
 
 
     <script>
-        // --- BARU: Daftar Gambar untuk Galeri ---
-        // Ganti isi daftar ini dengan nama file foto Anda yang sebenarnya.
         const galleryImages = [
-            "1.jpg",
-            "2.jpg",
-            "3.jpg",
-            "4.jpg",
-            "5.jpg",
-            "6.jpg",
-            "7.jpg",
-            "8.jpg"
-            // Tambahkan nama file lainnya di sini
+            "1.jpg", "2.jpg", "3.jpg", "4.jpg",
+            "5.jpg", "6.jpg", "7.jpg", "8.jpg"
         ];
-        // --- Logika untuk membuat galeri secara dinamis ---
+        
         function createGallery() {
             const container = document.getElementById('photo-gallery-container');
             if (!container) return;
-
             let galleryHTML = '';
-            // Loop ini sekarang hanya membuat item galeri sederhana tanpa kelas tambahan
             galleryImages.forEach((imageName, index) => {
                 galleryHTML += `
                 <div class="gallery-item">
@@ -118,17 +102,17 @@
                 </div>
             `;
             });
-
             container.innerHTML = galleryHTML;
         }
 
-        // --- Logic untuk Modal Tim ---
+        // --- DIUBAH: Logika untuk Modal Tim sekarang dipicu dari Navbar ---
         const teamModal = document.getElementById('teamModal');
-        const teamCard = document.getElementById('teamInfoCard');
+        const teamNavlink = document.getElementById('teamNavlink'); // Target link di navbar
         const closeBtn = document.getElementById('closeTeamModal');
 
-        if (teamCard) {
-            teamCard.onclick = function () {
+        if (teamNavlink) {
+            teamNavlink.onclick = function (e) {
+                e.preventDefault(); // Mencegah link pindah halaman
                 teamModal.style.display = "block";
             }
         }
@@ -145,7 +129,6 @@
             }
         }
 
-        // Jalankan fungsi untuk membuat galeri saat halaman dimuat
         document.addEventListener('DOMContentLoaded', createGallery);
     </script>
 </body>
