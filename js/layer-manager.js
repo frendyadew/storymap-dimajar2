@@ -27,30 +27,39 @@ class LayerManager {
         this.bounds = null;
         this.popupLockedByClick = false;
 
+        // Elemen style untuk mengontrol opacity ikon secara dinamis
+        this.iconOpacityStyleElement = document.createElement('style');
+        document.head.appendChild(this.iconOpacityStyleElement);
+
+        // DIUBAH: Menambahkan className unik untuk setiap ikon
         this.facilityIcons = {
             pendidikan: L.icon({
                 iconUrl: 'legends/sekolah.png',
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
-                popupAnchor: [0, -15]
+                popupAnchor: [0, -15],
+                className: 'icon-pendidikan'
             }),
             perdaganganjasa: L.icon({
                 iconUrl: 'legends/pasar.png',
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
-                popupAnchor: [0, -15]
+                popupAnchor: [0, -15],
+                className: 'icon-perdaganganjasa'
             }),
             peribadatan: L.icon({
                 iconUrl: 'legends/masjid.png',
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
-                popupAnchor: [0, -15]
+                popupAnchor: [0, -15],
+                className: 'icon-peribadatan'
             }),
             industri_pergudangan: L.icon({
                 iconUrl: 'legends/pabrik.png',
                 iconSize: [30, 30],
                 iconAnchor: [15, 15],
-                popupAnchor: [0, -15]
+                popupAnchor: [0, -15],
+                className: 'icon-industri_pergudangan'
             })
         };
 
@@ -166,34 +175,26 @@ class LayerManager {
 
     getLayerStyle(layerName, feature) {
         if (layerName === 'area_rt') {
-            // DIUBAH: Mengambil data dari field 'RT_RW' dan mengekstrak nomornya
-            const rt_rw_string = feature.properties?.RT_RW; // Hasilnya "RT 1" atau "RT 2"
+            const rt_rw_string = feature.properties?.RT_RW;
             let rt_number = null;
-
             if (rt_rw_string) {
-                // Menghapus "RT " dari teks untuk mendapatkan nomornya saja ("1" atau "2")
                 rt_number = rt_rw_string.replace('RT ', '');
             }
-
-            // Mencari warna di rtColorMap menggunakan nomor yang sudah diekstrak
-            const color = mapConfig.rtColorMap[rt_number] || '#cccccc'; // Gunakan warna abu-abu jika tidak ditemukan
-
+            const color = mapConfig.rtColorMap[rt_number] || '#cccccc';
             return {
                 ...mapConfig.layerStyles.area_rt,
                 color: color,
                 fillColor: color
             };
         }
-        // DIUBAH: Logika untuk membuat warna outline dinamis untuk lahan
         if (layerName === 'lahan') {
             const keterangan = feature.properties?.KETERANGAN;
             const fillColor = mapConfig.lahanColorMap[keterangan] || '#cccccc';
-            const outlineColor = darkenColor(fillColor, -30); // Buat warna outline lebih gelap 30%
-
+            const outlineColor = darkenColor(fillColor, -30);
             return {
                 ...mapConfig.layerStyles.lahan,
                 fillColor: fillColor,
-                color: outlineColor // Terapkan warna outline dinamis
+                color: outlineColor
             };
         }
         return mapConfig.layerStyles[layerName] || {};
@@ -260,9 +261,11 @@ class LayerManager {
 
     toggleBatasFill(showFill) {
         if (this.layers['dimajar2_batas']) {
+            const newOpacity = showFill ? 0.4 : 0;
             this.layers['dimajar2_batas'].setStyle({
-                fillOpacity: showFill ? 0.4 : 0
+                fillOpacity: newOpacity
             });
+            mapConfig.layerStyles.dimajar2_batas.fillOpacity = newOpacity;
         }
     }
 
@@ -270,15 +273,42 @@ class LayerManager {
         const layer = this.layers[layerName];
         if (!layer) return;
 
+        // DIUBAH: Logika baru untuk opacity ikon sarana yang menargetkan className unik
+        if (['pendidikan', 'perdaganganjasa', 'peribadatan', 'industri_pergudangan'].includes(layerName)) {
+            if (styleOptions.opacity !== undefined) {
+                const iconClassName = `.icon-${layerName}`;
+                const existingStyle = this.iconOpacityStyleElement.innerHTML;
+                const ruleRegex = new RegExp(`${iconClassName.replace('.', '\\.')}\\s*{[^}]*}`);
+                const newRule = `${iconClassName} { opacity: ${styleOptions.opacity}; }`;
+
+                if (existingStyle.match(ruleRegex)) {
+                    this.iconOpacityStyleElement.innerHTML = existingStyle.replace(ruleRegex, newRule);
+                } else {
+                    this.iconOpacityStyleElement.innerHTML += newRule;
+                }
+                Object.assign(mapConfig.layerStyles[layerName], styleOptions);
+            }
+            return;
+        }
+
+
         const finalStyle = { ...styleOptions };
         const isLine = layerName.includes('jalan');
 
-        if (finalStyle.fillColor && !isLine) {
-            finalStyle.color = darkenColor(finalStyle.fillColor, -40);
+        if (layerName === 'dimajar2_batas' && finalStyle.color) {
+            const newColor = finalStyle.color;
+            finalStyle.fillColor = newColor; 
+            finalStyle.color = darkenColor(newColor, -30);
+        } else if (finalStyle.fillColor && !isLine) {
+            finalStyle.color = darkenColor(finalStyle.fillColor, -30);
         }
-        if (finalStyle.fillOpacity !== undefined) {
+
+        if (finalStyle.fillOpacity !== undefined && !isLine) {
             finalStyle.opacity = finalStyle.fillOpacity;
+        } else if (finalStyle.opacity !== undefined && isLine) {
+            finalStyle.opacity = finalStyle.opacity;
         }
+
 
         Object.assign(mapConfig.layerStyles[layerName], finalStyle);
         if (layer.setStyle) {

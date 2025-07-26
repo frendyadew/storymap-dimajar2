@@ -1,23 +1,5 @@
 // Main Application "main.js"
 
-function darkenColor(hex, percent) {
-    hex = hex.replace('#', '');
-    let r = parseInt(hex.substring(0, 2), 16);
-    let g = parseInt(hex.substring(2, 4), 16);
-    let b = parseInt(hex.substring(4, 6), 16);
-
-    r = parseInt(r * (100 + percent) / 100);
-    g = parseInt(g * (100 + percent) / 100);
-    b = parseInt(b * (100 + percent) / 100);
-
-    r = (r < 255) ? r : 255;
-    g = (g < 255) ? g : 255;
-    b = (b < 255) ? b : 255;
-
-    const toHex = (c) => ('0' + c.toString(16)).slice(-2);
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-}
-
 class StoryMapApp {
     constructor() {
         this.map = null;
@@ -28,7 +10,6 @@ class StoryMapApp {
         this.customFeatureCounter = 1;
         this.drawnLayers = {};
 
-        // BARU: Membaca parameter URL untuk menentukan layer yang akan di-zoom
         const urlParams = new URLSearchParams(window.location.search);
         this.layerToZoom = urlParams.get('layer');
 
@@ -118,9 +99,9 @@ class StoryMapApp {
     populateLahanControls() {
         const container = document.getElementById('style-controls-lahan');
         if (!container) return;
-        let content = `<div class="control-row"><label>Opacity</label><input type="range" id="opacity-lahan" min="0" max="1" step="0.1" value="${mapConfig.layerStyles.lahan.fillOpacity || 1}"></div><hr style="margin: 10px 0;"><div class="control-row"><label style="font-weight: bold;">Warna Kategori:</label></div>`;
+        let content = `<div class="control-row"><label>Opacity</label><input type="range" id="opacity-lahan" min="0" max="1" step="0.1" value="${mapConfig.layerStyles.lahan.fillOpacity || 1}"></div><hr class="style-hr"><div class="control-row-cat-header"><label>Warna Kategori:</label></div>`;
         for (const [keterangan, color] of Object.entries(mapConfig.lahanColorMap)) {
-            content += `<div class="control-row"><label>${keterangan}</label><input type="color" class="lahan-color-picker" data-keterangan="${keterangan}" value="${color}"></div>`;
+            content += `<div class="control-row-cat"><label>${keterangan}</label><input type="color" class="lahan-color-picker" data-keterangan="${keterangan}" value="${color}"></div>`;
         }
         container.innerHTML = content;
     }
@@ -137,58 +118,56 @@ class StoryMapApp {
             button.addEventListener('click', (e) => {
                 const targetId = e.currentTarget.dataset.target;
                 const controls = document.getElementById(targetId);
-                if (controls) controls.style.display = controls.style.display === 'none' ? 'block' : 'none';
+                if (controls) {
+                    controls.style.display = controls.style.display === 'block' || controls.style.display === '' ? 'none' : 'block';
+                }
             });
         });
 
+        // Pengaturan layer Lahan
         document.getElementById('opacity-lahan')?.addEventListener('input', (e) => this.layerManager.updateLayerStyle('lahan', { fillOpacity: parseFloat(e.target.value) }));
         document.querySelectorAll('.lahan-color-picker').forEach(picker => picker.addEventListener('input', (e) => this.layerManager.updateLahanCategoryColor(e.target.dataset.keterangan, e.target.value)));
         
-        Object.keys(mapConfig.layerStyles).forEach(layerName => {
-            if (layerName === 'lahan' || ['pendidikan', 'perdaganganjasa', 'peribadatan', 'industri_pergudangan'].includes(layerName)) {
-                 // Skip 'lahan' (diurus terpisah) dan sarana (tidak ada kontrol warna lagi)
-            }
-            
-            const colorInput = document.getElementById(`color-${layerName}`);
-            const opacityInput = document.getElementById(`opacity-${layerName}`);
-            const legend = document.getElementById(`legend-${layerName}`);
-
-            if (colorInput) {
-                colorInput.addEventListener('input', (e) => {
-                    const newColor = e.target.value;
-                    const isLine = ['jalan_lokal', 'area_rt', 'dimajar2_batas'].includes(layerName);
-                    const styleProp = isLine ? 'color' : 'fillColor';
-                    this.layerManager.updateLayerStyle(layerName, { [styleProp]: newColor });
-
-                    if (legend) {
-                        if (layerName.includes('batas') || layerName === 'area_rt') {
-                            legend.style.borderColor = newColor;
-                        } else {
-                            legend.style.backgroundColor = newColor;
-                        }
-                    }
-                });
-            }
-
-            if (opacityInput) {
-                opacityInput.addEventListener('input', (e) => {
-                    const newOpacity = parseFloat(e.target.value);
-                    const isPointLayer = ['pendidikan', 'perdaganganjasa', 'peribadatan', 'industri_pergudangan'].includes(layerName);
-                    
-                    if (isPointLayer) {
-                        // Untuk ikon, opacity tidak bisa diubah langsung, ini hanya untuk circleMarker.
-                        // Jika ingin kontrol opacity ikon, perlu logika yang lebih kompleks.
-                        // Untuk saat ini, kita biarkan saja.
-                    } else {
-                        const isLine = layerName === 'jalan_lokal';
-                        const styleProp = isLine ? 'opacity' : 'fillOpacity';
-                        this.layerManager.updateLayerStyle(layerName, { [styleProp]: newOpacity });
-                    }
-                });
-            }
+        // Pengaturan Jalan Lokal
+        document.getElementById('color-jalan_lokal')?.addEventListener('input', (e) => {
+             this.layerManager.updateLayerStyle('jalan_lokal', { color: e.target.value });
+             document.getElementById('legend-jalan_lokal').style.backgroundColor = e.target.value;
+        });
+        document.getElementById('opacity-jalan_lokal')?.addEventListener('input', (e) => {
+             this.layerManager.updateLayerStyle('jalan_lokal', { opacity: parseFloat(e.target.value) });
         });
 
+        // Pengaturan opacity untuk semua Sarana
+        ['pendidikan', 'perdaganganjasa', 'peribadatan', 'industri_pergudangan'].forEach(layerName => {
+            document.getElementById(`opacity-${layerName}`)?.addEventListener('input', (e) => {
+                this.layerManager.updateLayerStyle(layerName, { opacity: parseFloat(e.target.value) });
+            });
+        });
+
+        // Pengaturan untuk Sungai & Bangunan
+         ['sungai', 'bangunan'].forEach(layerName => {
+            document.getElementById(`color-${layerName}`)?.addEventListener('input', (e) => {
+                this.layerManager.updateLayerStyle(layerName, { fillColor: e.target.value });
+                document.getElementById(`legend-${layerName}`).style.backgroundColor = e.target.value;
+            });
+            document.getElementById(`opacity-${layerName}`)?.addEventListener('input', (e) => {
+                this.layerManager.updateLayerStyle(layerName, { fillOpacity: parseFloat(e.target.value) });
+            });
+        });
+
+        // Pengaturan untuk Batas RT
+        document.getElementById('opacity-area_rt')?.addEventListener('input', (e) => {
+             this.layerManager.updateLayerStyle('area_rt', { fillOpacity: parseFloat(e.target.value) });
+        });
+
+        // Pengaturan untuk Batas Dusun
         document.getElementById('batasFillToggle')?.addEventListener('change', (e) => this.layerManager.toggleBatasFill(e.target.checked));
+        document.getElementById('color-dimajar2_batas')?.addEventListener('input', (e) => {
+            this.layerManager.updateLayerStyle('dimajar2_batas', { color: e.target.value }); // Layer manager akan urus outline+fill
+             document.getElementById('legend-dimajar2_batas').style.borderColor = e.target.value;
+        });
+
+
         document.getElementById('aboutBtn').addEventListener('click', () => this.showAboutModal());
         document.getElementById('homeBtn').addEventListener('click', () => this.layerManager.zoomToExtent());
     }
@@ -210,9 +189,7 @@ class StoryMapApp {
     async loadLayers() {
         await this.layerManager.loadAllLayers();
 
-        // BARU: Logika untuk zoom ke layer spesifik atau ke extent default
         if (this.layerToZoom) {
-            // Beri sedikit waktu agar peta selesai render sebelum zoom
             setTimeout(() => this.layerManager.zoomToLayer(this.layerToZoom), 200);
         } else {
             setTimeout(() => this.layerManager.zoomToExtent(), 200);

@@ -65,34 +65,17 @@ const mapConfig = {
             weight: 4,
             opacity: 0.8
         },
-        // DIUBAH: Menghapus fillColor karena akan menggunakan ikon statis
         pendidikan: {
-            radius: 8,
-            color: '#1e88e5',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.8
+            opacity: 1.0 // Mengontrol opacity ikon
         },
         perdaganganjasa: {
-            radius: 8,
-            color: '#26a69a',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.8
+            opacity: 1.0 // Mengontrol opacity ikon
         },
         peribadatan: {
-            radius: 8,
-            color: '#ff9f43',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.8
+             opacity: 1.0 // Mengontrol opacity ikon
         },
         industri_pergudangan: {
-            radius: 8,
-            color: '#6a1b9a',
-            weight: 2,
-            opacity: 1,
-            fillOpacity: 0.8
+             opacity: 1.0 // Mengontrol opacity ikon
         },
         sungai: {
             fillColor: '#3498db',
@@ -102,10 +85,11 @@ const mapConfig = {
             fillOpacity: 0.7
         },
         area_rt: {
-            color: '#ff17ab', // Warna default
+            color: '#ff17ab',
             weight: 2.5,
             fill: true,
-            fillColor: '#ff17ab', // Warna default
+            fillColor: '#ff17ab',
+            opacity: 1,
             fillOpacity: 0.35,
             dashArray: '5, 5'
         },
@@ -113,8 +97,8 @@ const mapConfig = {
             color: '#f7b731',
             weight: 3,
             fill: true,
-            fillColor: '#fff700',
-            fillOpacity: 0 // default: tanpa fill
+            fillColor: '#f7b731',
+            fillOpacity: 0 // DIUBAH: default isian nonaktif
         },
         lahan: {
             color: '#888',
